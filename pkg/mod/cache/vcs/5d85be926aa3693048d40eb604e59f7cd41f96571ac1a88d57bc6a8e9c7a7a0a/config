@@ -1,0 +1,9 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = true
+	ignorecase = true
+	precomposeunicode = true
+[remote "origin"]
+	url = git://code.uber.internal/infra/cassandra-clients
+	fetch = +refs/heads/*:refs/remotes/origin/*
