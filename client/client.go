@@ -2,7 +2,7 @@ package controller
 
 import (
 	"context"
-	servercontroller "distributed-systems-ghc/distributed-systems-ghc/server/controller"
+	servercontroller "distributed-systems-ghc/server/controller"
 	"net/http"
 	"time"
 )
