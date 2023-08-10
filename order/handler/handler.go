@@ -1,20 +1,15 @@
 package handler
 
 import (
+	"distributed-systems-ghc/order/models"
+	"distributed-systems-ghc/order/service"
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
-
-	"distributed-systems-ghc/service"
-	"github.com/gin-gonic/gin"
 )
 
 func PlaceOrder(c *gin.Context) {
-	var orderData struct {
-		CustomerID int
-		ProductID  int
-		Quantity   int
-	}
-
+	var orderData models.OrderData
 	if err := c.ShouldBindJSON(&orderData); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
