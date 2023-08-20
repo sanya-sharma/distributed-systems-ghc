@@ -1,4 +1,4 @@
-# distributed-systems-ghc
+# distributed-systems-ghc Database setup
 This is the master repo for GHC23 presentation
 
 
