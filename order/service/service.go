@@ -1,8 +1,8 @@
 package service
 
 import (
-	"distributed-systems-ghc/models"
-	"distributed-systems-ghc/repository"
+	"distributed-systems-ghc/order/models"
+	"distributed-systems-ghc/order/repository"
 	"errors"
 	"gorm.io/gorm"
 )

@@ -15,7 +15,7 @@ type Order struct {
 }
 
 type OrderData struct {
-	CustomerID int
-	ProductID  int
-	Quantity   int
+	CustomerID int `json:"customer_id"`
+	ProductID  int `json:"product_id"`
+	Quantity   int `json:"quantity"`
 }
