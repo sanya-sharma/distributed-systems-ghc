@@ -7,5 +7,6 @@ import (
 
 func SetupRoutes(r *gin.Engine) {
 	r.GET("/get-catalog", handler.GetCatalog)
+	r.POST("/update-catalog", handler.UpdateCatalog)
 
 }
