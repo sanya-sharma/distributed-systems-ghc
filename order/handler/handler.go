@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"context"
 	"distributed-systems-ghc/order/models"
 	"distributed-systems-ghc/order/service"
 	"github.com/gin-gonic/gin"
-	"context"
 	"gorm.io/gorm"
+	"log"
 	"net/http"
+	"time"
 )
 
 func PlaceOrder(c *gin.Context) {
