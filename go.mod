@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/cavdy-play/go_db v0.0.0-20200119001631-7bb67a6cf354
 	github.com/gin-gonic/gin v1.9.1
+	github.com/lib/pq v1.10.9
 	gorm.io/driver/postgres v1.5.2
 	gorm.io/gorm v1.25.2
 )
