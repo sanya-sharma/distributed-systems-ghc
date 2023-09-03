@@ -13,21 +13,11 @@ func (p *PaymentContext) SetPaymentMethod(method PaymentMethods) {
 }
 
 func (p *PaymentContext) ExecutePayment() (err error) {
-
 	err = p.executor.Execute()
-	if err != nil {
-		return err
-	}
-	
-	return nil
+	return err
 }
 
 func (p *PaymentContext) RollbackPayment() (err error) {
-
 	err = p.executor.Cancel()
-	if err != nil {
-		return err
-	}
-	
-	return nil
+	return err
 }
