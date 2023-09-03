@@ -34,9 +34,16 @@ INSERT INTO users (username, password, role)
  ````
 7. Run the following sql to insert data into customer table
 ````
-   INSERT INTO customers (name, email, phone_number, address, user_id, created_at, updated_at)
+INSERT INTO customers (name, email, phone_number, address, user_id, created_at, updated_at)
    VALUES
    ('John Doe', 'johndoe@example.com', '123-456-7890', '123 Main St, Anytown, USA', 1, CURRENT_TIMESTAMP, NULL),
    ('Jane Smith', 'janesmith@example.com', '987-654-3210', '456 Elm St, Othertown, USA', 2, CURRENT_TIMESTAMP, NULL),
    ('Bob Johnson', 'bjohnson@example.com', '555-123-4567', '789 Oak St, Somewhere, USA', 3, CURRENT_TIMESTAMP, NULL);
+````
+8. Run the following sql to insert data into catalog table
+````
+INSERT INTO products (name, description, price, stock_qty) VALUES
+    ('Product 4', 'Cotton saree solid', 1999.99, 100),
+    ('Product 5', 'Cotton saree printed’', 2999.99, 150),
+    ('Product 6', 'Solid chiffon saree’', 5999.99, 200);
 ````
