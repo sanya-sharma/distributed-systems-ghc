@@ -5,6 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mroth/weightedrand"
 	"net/http"
+	"distributed-systems-ghc/payment/models"
+	"distributed-systems-ghc/payment/service"
 )
 
 var (
@@ -17,7 +19,30 @@ var (
 )
 
 func InitiatePayment(c *gin.Context) {
+    var payment models.Payment
+
+    if err := c.ShouldBindJSON(&payment); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    db, exists := c.Get("db")
+    if !exists {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection not found"})
+        return
+    }
+
+    if err := service.InitiatePayment(db.(*gorm.DB), payment); err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Error initiating the payment"})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "message": fmt.Sprintf("Payment initiated using %s method for OrderID %d.", payment.PaymentMethod, payment.OrderID),
+        "payment": payment,
+    })
 }
+
 
 func RollbackPayment(c *gin.Context) {
 }
