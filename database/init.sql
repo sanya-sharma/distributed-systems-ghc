@@ -60,4 +60,3 @@ CREATE TABLE IF NOT EXISTS payments (
  status TEXT NOT NULL,
  FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE
     );
-
