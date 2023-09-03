@@ -24,6 +24,19 @@ func InitiatePayment(db *gorm.DB, payment models.Payment) (err error) {
 	return err
 }
 
+func RollbackPayment(db *gorm.DB, payment models.Payment) (err error) {
+    fmt.Printf("Rolling back payment with ID %d...\n", payment.ID)
+
+	paymentMethod := getPaymentMethod(strings.ToLower(payment.PaymentMethod))
+	if paymentMethod == nil {
+		return errors.New("Invalid payment method")
+	}
+	paymentContext := SetPaymentMethod(paymentMethod)
+	err := paymentContext.RollbackPayment()
+
+	return err
+}
+
 func getPaymentMethod(paymentMethod string) PaymentMethods{
 	switch paymentMethod {
 	case "amex":

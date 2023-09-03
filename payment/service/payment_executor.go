@@ -1,9 +1,5 @@
 package service
 
-import (
-
-)
-
 type PaymentMethods interface {
 	Execute()
 }
@@ -19,6 +15,16 @@ func (p *PaymentContext) SetPaymentMethod(method PaymentMethods) {
 func (p *PaymentContext) ExecutePayment() (err error) {
 
 	err = p.executor.Execute()
+	if err != nil {
+		return err
+	}
+	
+	return nil
+}
+
+func (p *PaymentContext) RollbackPayment() (err error) {
+
+	err = p.executor.Cancel()
 	if err != nil {
 		return err
 	}

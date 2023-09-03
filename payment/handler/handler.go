@@ -43,8 +43,29 @@ func InitiatePayment(c *gin.Context) {
     })
 }
 
-
 func RollbackPayment(c *gin.Context) {
+    var payment models.Payment
+
+    if err := c.ShouldBindJSON(&payment); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    db, exists := c.Get("db")
+    if !exists {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection not found"})
+        return
+    }
+
+    if err := service.RollbackPayment(db.(*gorm.DB), payment); err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Error rolling back the payment"})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "message": fmt.Sprintf("Payment with ID %d has been rolled back.", payment.ID),
+        "payment": payment,
+    })
 }
 
 func GetAvailablePaymentMethods(c *gin.Context) {
