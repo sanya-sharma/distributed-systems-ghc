@@ -5,31 +5,31 @@ import (
 	"gorm.io/gorm"
 )
 
-type InventoryRepository struct {
+type CatalogRepository struct {
 	DB *gorm.DB
 }
 
-// CreateInventory inserts a new inventory record into the database.
-func (repo *InventoryRepository) CreateInventory(inventory *models.Inventory) error {
-	result := repo.DB.Create(inventory)
+// CreateCatalog inserts a new catalog record into the database.
+func (repo *CatalogRepository) CreateCatalog(catalog *models.Catalog) error {
+	result := repo.DB.Create(catalog)
 	return result.Error
 }
 
-// DeleteInventory deletes an inventory record from the database.
-func (repo *InventoryRepository) DeleteInventory(inventory *models.Inventory) error {
-	result := repo.DB.Delete(inventory)
+// DeleteCatalog deletes an catalog record from the database.
+func (repo *CatalogRepository) DeleteCatalog(catalog *models.Catalog) error {
+	result := repo.DB.Delete(catalog)
 	return result.Error
 }
 
-// UpdateInventory updates an inventory record in the database.
-func (repo *InventoryRepository) UpdateInventory(inventory *models.Inventory) error {
-	result := repo.DB.Save(inventory)
+// UpdateCatalog updates an catalog record in the database.
+func (repo *CatalogRepository) UpdateCatalog(catalog *models.Catalog) error {
+	result := repo.DB.Save(catalog)
 	return result.Error
 }
 
-// GetInventoryByProductID retrieves an inventory record by product ID from the database.
-func (repo *InventoryRepository) GetInventoryByProductID(productID int) (*models.Inventory, error) {
-	var inventory models.Inventory
-	result := repo.DB.First(&inventory, "product_id = ?", productID)
-	return &inventory, result.Error
+// GetCatalogByProductID retrieves an catalog record by product ID from the database.
+func (repo *CatalogRepository) GetCatalogByProductID(productID int) (*models.Catalog, error) {
+	var catalog models.Catalog
+	result := repo.DB.First(&catalog, productID)
+	return &catalog, result.Error
 }
