@@ -1,14 +1,14 @@
 package main
 
 import (
-	"distributed-systems-ghc/order/config"
-	"distributed-systems-ghc/order/routes"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
+	"order/config"
+	"order/routes"
 	"path/filepath"
 )
 

@@ -20,8 +20,8 @@ CREATE TABLE IF NOT EXISTS customers (
    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
--- Create the "products" table to store product information
-CREATE TABLE IF NOT EXISTS products (
+-- Create the "catalogs" table to store product information
+CREATE TABLE IF NOT EXISTS catalogs (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   description TEXT,
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS order_items (
     quantity INT NOT NULL,
     price NUMERIC(10, 2) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products (id)
+    FOREIGN KEY (product_id) REFERENCES catalogs (id)
     );
 
 -- Create the "payments" table to store payment details for each order
@@ -60,3 +60,20 @@ CREATE TABLE IF NOT EXISTS payments (
  status TEXT NOT NULL,
  FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE
     );
+
+INSERT INTO users (username, password, role)
+VALUES
+    ('user1', 'password1', 'user'),
+    ('user2', 'password2', 'user'),
+    ('user3', 'password2', 'user');
+
+INSERT INTO customers (name, email, phone_number, address, user_id, created_at, updated_at)
+VALUES
+    ('John Doe', 'johndoe@example.com', '123-456-7890', '123 Main St, Anytown, USA', 1, CURRENT_TIMESTAMP, NULL),
+    ('Jane Smith', 'janesmith@example.com', '987-654-3210', '456 Elm St, Othertown, USA', 2, CURRENT_TIMESTAMP, NULL),
+    ('Bob Johnson', 'bjohnson@example.com', '555-123-4567', '789 Oak St, Somewhere, USA', 3, CURRENT_TIMESTAMP, NULL);
+
+INSERT INTO catalogs (name, description, price, stock_qty) VALUES
+    ('Product 4', 'Cotton saree solid', 1999.99, 100),
+    ('Product 5', 'Cotton saree printed’', 2999.99, 150),
+    ('Product 6', 'Solid chiffon saree’', 5999.99, 200);

@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"distributed-systems-ghc/order/handler"
 	"github.com/gin-gonic/gin"
+	"order/handler"
 )
 
 func SetupRoutes(r *gin.Engine) {
