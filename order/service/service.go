@@ -13,8 +13,8 @@ import (
 var maxRetries = 3
 
 func PlaceOrder(db *gorm.DB, customerID, productID, quantity int) (order models.Order, err error) {
-	customerRepo := &repository.CustomerRepository{DB: db}   // Initialize with actual repository
-	inventoryRepo := &repository.InventoryRepository{DB: db} // Initialize with actual repository
+	customerRepo := &repository.CustomerRepository{DB: db} // Initialize with actual repository
+	inventoryRepo := &repository.CatalogRepository{DB: db} // Initialize with actual repository
 	// maximum number of downstream retries
 
 	var customer *models.Customer
@@ -47,10 +47,10 @@ func PlaceOrder(db *gorm.DB, customerID, productID, quantity int) (order models.
 	return newOrder, nil
 }
 
-func updateCatalog(inventoryRepo *repository.InventoryRepository, productID int, quantity int) (err error) {
+func updateCatalog(catalogRepo *repository.CatalogRepository, productID int, quantity int) (err error) {
 
 	// Start a new transaction
-	tx := inventoryRepo.DB.Begin()
+	tx := catalogRepo.DB.Begin()
 	if tx.Error != nil {
 		return tx.Error
 	}
@@ -64,8 +64,8 @@ func updateCatalog(inventoryRepo *repository.InventoryRepository, productID int,
 		}
 	}()
 
-	var inventory *models.Inventory
-	inventory, err = inventoryRepo.GetInventoryByProductID(productID)
+	var inventory *models.Catalog
+	inventory, err = catalogRepo.GetCatalogByProductID(productID)
 	if err != nil {
 		return err
 	}
@@ -76,7 +76,7 @@ func updateCatalog(inventoryRepo *repository.InventoryRepository, productID int,
 	}
 
 	inventory.StockQty -= quantity
-	if err := inventoryRepo.UpdateInventory(inventory); err != nil {
+	if err := catalogRepo.UpdateCatalog(inventory); err != nil {
 		tx.Rollback()
 		return errors.New("failed to update catalog")
 	}
