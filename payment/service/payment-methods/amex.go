@@ -1,19 +1,23 @@
 package paymentmethods
 
 import (
+	"distributed-systems-ghc/payment/service"
 	"time"
 )
 
 type Amex struct{}
 
-func (p *Amex) Execute() (error) {
+var amexClient = "Amex"
+
+func (p *Amex) Execute() bool {
 	duration := 2 * time.Second
-    time.Sleep(duration)
-	return nil
+	isClientAvailable := service.CheckAvailability(amexClient)
+	time.Sleep(duration)
+	return isClientAvailable
 }
 
-func (p *Amex) Cancel() (error) {
+func (p *Amex) Cancel() error {
 	duration := 5 * time.Second
-    time.Sleep(duration)
+	time.Sleep(duration)
 	return nil
 }
