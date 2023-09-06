@@ -1,8 +1,8 @@
 package models
 
-// Catalog represents the stock of products available.
+// Catalog represents a product that can be ordered.
 type Catalog struct {
-	ProductID   int `gorm:"column:id"`
+	ID          int `gorm:"column:id"`
 	Name        string
 	Description string
 	Price       float64

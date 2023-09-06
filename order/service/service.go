@@ -1,10 +1,10 @@
 package service
 
 import (
-	"distributed-systems-ghc/order/models"
-	"distributed-systems-ghc/order/repository"
 	"errors"
 	"log"
+	"order/models"
+	"order/repository"
 	"time"
 
 	"gorm.io/gorm"

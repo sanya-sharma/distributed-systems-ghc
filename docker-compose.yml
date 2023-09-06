@@ -1,0 +1,37 @@
+version: '3'
+services:
+  postgres:
+    build:
+      context: ./database
+    image: postgres:latest
+    container_name: postgres-container
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data_2:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - mynetwork
+
+  go-app:
+    build:
+      context: ./order  # Set the build context to the 'order' directory
+      dockerfile: Dockerfile  # Specify the name of the Dockerfile
+    container_name: go-app-container
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+
+volumes:
+  postgres_data_2:
+

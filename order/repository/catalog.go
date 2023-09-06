@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"distributed-systems-ghc/order/models"
 	"gorm.io/gorm"
+	"order/models"
 )
 
 type CatalogRepository struct {

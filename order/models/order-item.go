@@ -4,7 +4,7 @@ package models
 type OrderItem struct {
 	ID       int     `db:"id"`
 	OrderID  int     `db:"order_id"`
-	Product  Product `db:"product"`
+	Catalog  Catalog `db:"catalog"`
 	Quantity int     `db:"quantity"`
 	Price    float64 `db:"price"`
 }
