@@ -1,14 +1,15 @@
 package service
 
-type PaymentMethods interface {
+type PaymentGateways interface {
 	Execute()
 }
 
 type PaymentContext struct {
-	executor PaymentMethods
+	Client   string
+	executor PaymentGateways
 }
 
-func (p *PaymentContext) SetPaymentMethod(method PaymentMethods) {
+func (p *PaymentContext) SetPaymentMethod(method PaymentGateways) {
 	p.executor = method
 }
 

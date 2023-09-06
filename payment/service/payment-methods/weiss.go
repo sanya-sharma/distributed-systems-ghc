@@ -1,19 +1,23 @@
 package paymentmethods
 
 import (
+	"distributed-systems-ghc/payment/service"
 	"time"
 )
 
 type Weiss struct{}
 
-func (p *Weiss) Execute() (error) {
+var weissClient = "Weiss"
+
+func (p *Weiss) Execute() bool {
 	duration := 4 * time.Second
-    time.Sleep(duration)
-	return nil
+	isClientAvailable := service.CheckAvailability(weissClient)
+	time.Sleep(duration)
+	return isClientAvailable
 }
 
-func (p *Weiss) Cancel() (error) {
+func (p *Weiss) Cancel() error {
 	duration := 3 * time.Second
-    time.Sleep(duration)
+	time.Sleep(duration)
 	return nil
 }
