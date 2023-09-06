@@ -2,41 +2,30 @@ package service
 
 import (
 	"distributed-systems-ghc/payment/models"
+	"distributed-systems-ghc/payment/entity"
+	paymentMehtods "distributed-systems-ghc/payment/service/payment-methods"
 	"errors"
 	"fmt"
-	"github.com/mroth/weightedrand"
 	"strings"
 )
 
-var (
-	paymentGatewaysConfig = []weightedrand.Choice{
-		{Item: "Weiss", Weight: 1},
-		{Item: "Zakpay", Weight: 5},
-		{Item: "Paypal", Weight: 0},
-		{Item: "Amex", Weight: 2},
-	}
-	paymentGateways = []string{
-		"Zakpay",
-		"Amex",
-		"Weiss",
-		"Paypal",
-	}
-)
+
 
 func InitiatePayment(payment models.Payment) (err error) {
 
-	for _, paymentGateway := range paymentGateways {
+	for _, paymentGateway := range entity.PaymentGateways {
 		paymentGatewayClient := getPaymentMethod(paymentGateway)
 		if paymentGatewayClient == nil {
 			return errors.New("invalid payment method")
 		}
 
-		fmt.Printf("Initiating payment using %s gateway for OrderID %d...\n", payment.PaymentMethod, payment.OrderID)
+		fmt.Printf("Initiating payment using %s gateway for OrderID %d...\n", paymentGateway, payment.OrderID)
 
-		paymentContext := SetPaymentMethod(paymentGatewayClient)
-		err = paymentContext.ExecutePayment()
-		if err != nil {
-			fmt.Printf("Payment gateway %v\n is %v", paymentGateway, err.Error())
+		paymentContext := &PaymentContext{}
+		paymentContext.SetPaymentMethod(paymentGatewayClient)
+		completed := paymentContext.ExecutePayment()
+		if !completed {
+			fmt.Printf("Payment gateway %v is unavailable\n", paymentGateway)
 		}
 	}
 
@@ -50,8 +39,9 @@ func RollbackPayment(payment models.Payment) (err error) {
 	if paymentMethod == nil {
 		return errors.New("Invalid payment method")
 	}
-	paymentContext := SetPaymentMethod(paymentMethod)
-	err := paymentContext.RollbackPayment()
+	paymentContext := &PaymentContext{}
+	paymentContext.SetPaymentMethod(paymentMethod)
+	err = paymentContext.RollbackPayment()
 
 	return err
 }
@@ -59,31 +49,14 @@ func RollbackPayment(payment models.Payment) (err error) {
 func getPaymentMethod(paymentGateway string) PaymentGateways {
 	switch strings.ToLower(paymentGateway) {
 	case "amex":
-		return &paymentGatewaysConfig.Amex{}
+		return &paymentMehtods.Amex{}
 	case "paypal":
-		return &paymentGatewaysConfig.Paypal{}
+		return &paymentMehtods.Paypal{}
 	case "weiss":
-		return &paymentGatewaysConfig.Weiss{}
+		return &paymentMehtods.Weiss{}
 	case "zakpay":
-		return &paymentGatewaysConfig.Zakpay{}
+		return &paymentMehtods.Zakpay{}
 	default:
 		return nil
 	}
-}
-func CheckAvailability(paymentMethod string) bool {
-
-	chooser, err := weightedrand.NewChooser(paymentGatewaysConfig...)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return false
-	}
-	flakyPaymentMethod := chooser.Pick().(string)
-	if paymentMethod == flakyPaymentMethod {
-		fmt.Printf("Payment method %v\n is unavailable", paymentMethod)
-
-		return false
-	}
-	fmt.Printf("Payment method %v\n is available", paymentMethod)
-	return true
-
 }

@@ -6,6 +6,7 @@ import (
 )
 
 func SetupRoutes(r *gin.Engine) {
-	r.GET("/get-payment-methods", handler.GetAvailablePaymentMethods)
-
+	r.GET("/get-available-payment-methods", handler.GetAvailablePaymentMethods)
+	r.POST("/initiate-payment", handler.InitiatePayment)
+	r.POST("/rollback-payment", handler.RollbackPayment)
 }

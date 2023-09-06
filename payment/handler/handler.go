@@ -3,10 +3,10 @@ package handler
 import (
 	"distributed-systems-ghc/payment/models"
 	"distributed-systems-ghc/payment/service"
+	"distributed-systems-ghc/payment/entity"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mroth/weightedrand"
-	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -18,13 +18,13 @@ func InitiatePayment(c *gin.Context) {
 		return
 	}
 
-	db, exists := c.Get("db")
-	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection not found"})
-		return
-	}
+	//db, _ := c.Get("db")
+	// if !exists {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection not found"})
+	// 	return
+	// }
 
-	if err := service.InitiatePayment(db.(*gorm.DB), payment); err != nil {
+	if err := service.InitiatePayment(payment); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error initiating the payment"})
 		return
 	}
@@ -43,13 +43,13 @@ func RollbackPayment(c *gin.Context) {
 		return
 	}
 
-	db, exists := c.Get("db")
-	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection not found"})
-		return
-	}
+	// db, exists := c.Get("db")
+	// if !exists {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection not found"})
+	// 	return
+	// }
 
-	if err := service.RollbackPayment(db.(*gorm.DB), payment); err != nil {
+	if err := service.RollbackPayment(payment); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error rolling back the payment"})
 		return
 	}
@@ -62,9 +62,9 @@ func RollbackPayment(c *gin.Context) {
 
 func GetAvailablePaymentMethods(c *gin.Context) {
 
-	for _, paymentMethod := range paymentMethods {
+	for _, paymentMethod := range entity.PaymentGatewaysConfig {
 		go func(paymentMethod weightedrand.Choice) {
-			chooser, err := weightedrand.NewChooser(paymentMethods...)
+			chooser, err := weightedrand.NewChooser(entity.PaymentGatewaysConfig...)
 			if err != nil {
 				fmt.Println("Error:", err)
 				return
