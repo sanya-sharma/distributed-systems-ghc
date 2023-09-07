@@ -32,7 +32,7 @@ func main() {
 		c.Next()
 	})
 	routes.SetupRoutes(router)
-	router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	router.Run(":8080") // listen and serve on 0.0.0.0:8081 (for windows "localhost:8081")
 }
 
 func setupDB(config config.Config) (*gorm.DB, error) {
