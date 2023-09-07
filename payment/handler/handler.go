@@ -14,18 +14,18 @@ func InitiatePayment(c *gin.Context) {
 	var payment models.Payment
 
 	if err := c.ShouldBindJSON(&payment); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"Error reading request": err.Error()})
 		return
 	}
 
 	if err := service.InitiatePayment(payment); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error initiating the payment"})
+		c.JSON(http.StatusInternalServerError, gin.H{"Error initiating the payment": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": fmt.Sprintf("Payment initiated using %s method for OrderID %d.", payment.PaymentMethod, payment.OrderID),
-		"payment": payment,
+		"message": fmt.Sprintf("Payment initiated for OrderID %d, amount %f", payment.OrderID, payment.Amount),
+		"status":  "success",
 	})
 }
 

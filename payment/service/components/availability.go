@@ -1,9 +1,9 @@
 package components
 
-import(
+import (
+	"distributed-systems-ghc/payment/entity"
 	"fmt"
 	"github.com/mroth/weightedrand"
-	"distributed-systems-ghc/payment/entity"
 )
 
 func CheckAvailability(paymentMethod string) bool {
@@ -15,8 +15,6 @@ func CheckAvailability(paymentMethod string) bool {
 	}
 	flakyPaymentMethod := chooser.Pick().(string)
 	if paymentMethod == flakyPaymentMethod {
-		fmt.Printf("Payment method %v is unavailable\n", paymentMethod)
-
 		return false
 	}
 	fmt.Printf("Payment method %v is available\n", paymentMethod)

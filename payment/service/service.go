@@ -1,49 +1,50 @@
 package service
 
 import (
-	"distributed-systems-ghc/payment/models"
 	"distributed-systems-ghc/payment/entity"
+	"distributed-systems-ghc/payment/models"
 	paymentMehtods "distributed-systems-ghc/payment/service/payment-methods"
 	"errors"
 	"fmt"
+	"log"
 	"strings"
 )
 
-
-
 func InitiatePayment(payment models.Payment) (err error) {
-
 	for _, paymentGateway := range entity.PaymentGateways {
 		paymentGatewayClient := getPaymentMethod(paymentGateway)
 		if paymentGatewayClient == nil {
-			return errors.New("invalid payment method")
+			return errors.New("invalid payment gateway")
 		}
 
-		fmt.Printf("Initiating payment using %s gateway for OrderID %d...\n", paymentGateway, payment.OrderID)
+		log.Printf("Initiating payment using %s gateway for OrderID %d...\n", paymentGateway, payment.OrderID)
 
 		paymentContext := &PaymentContext{}
 		paymentContext.SetPaymentMethod(paymentGatewayClient)
 		completed := paymentContext.ExecutePayment()
 		if !completed {
-			fmt.Printf("Payment gateway %v is unavailable\n", paymentGateway)
+			log.Printf("Payment gateway %v is unavailable\n", paymentGateway)
+		} else {
+			log.Printf("Payment successful\n")
+			return nil
 		}
 	}
 
-	return err
+	return errors.New("payment was unsuccessful, please try again after some time")
 }
 
 func RollbackPayment(payment models.Payment) (err error) {
 	fmt.Printf("Rolling back payment with ID %d...\n", payment.ID)
+	//todo no payment method to pass
+	//paymentMethod := getPaymentMethod(strings.ToLower(payment.PaymentMethod))
+	//if paymentMethod == nil {
+	//	return errors.New("Invalid payment method")
+	//}
+	//paymentContext := &PaymentContext{}
+	//paymentContext.SetPaymentMethod(paymentMethod)
+	//err = paymentContext.RollbackPayment()
 
-	paymentMethod := getPaymentMethod(strings.ToLower(payment.PaymentMethod))
-	if paymentMethod == nil {
-		return errors.New("Invalid payment method")
-	}
-	paymentContext := &PaymentContext{}
-	paymentContext.SetPaymentMethod(paymentMethod)
-	err = paymentContext.RollbackPayment()
-
-	return err
+	return nil
 }
 
 func getPaymentMethod(paymentGateway string) PaymentGateways {
