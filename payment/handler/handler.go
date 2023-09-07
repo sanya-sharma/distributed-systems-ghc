@@ -1,9 +1,9 @@
 package handler
 
 import (
+	"distributed-systems-ghc/payment/entity"
 	"distributed-systems-ghc/payment/models"
 	"distributed-systems-ghc/payment/service"
-	"distributed-systems-ghc/payment/entity"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mroth/weightedrand"
@@ -17,12 +17,6 @@ func InitiatePayment(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	//db, _ := c.Get("db")
-	// if !exists {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection not found"})
-	// 	return
-	// }
 
 	if err := service.InitiatePayment(payment); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error initiating the payment"})
@@ -42,12 +36,6 @@ func RollbackPayment(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	// db, exists := c.Get("db")
-	// if !exists {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection not found"})
-	// 	return
-	// }
 
 	if err := service.RollbackPayment(payment); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error rolling back the payment"})
