@@ -15,19 +15,12 @@ import (
 // GetCatalog is the api used to get the saree catalog
 func GetCatalog(c *gin.Context) {
 
-	//requestBody, err := c.GetRawData()
-	//if err != nil {
-	//	c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read request body"})
+	//var getCatalogResponse *models.CatalogRequest
+	//if err := c.ShouldBindJSON(&getCatalogResponse); err != nil {
+	//	log.Printf("Error while parsing order data: %v", err)
+	//	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	//	return
 	//}
-	//err = json.Unmarshal(requestBody, &getCatalogResponse)
-
-	var getCatalogResponse *models.CatalogResponse
-	if err := c.ShouldBindJSON(&getCatalogResponse); err != nil {
-		log.Printf("Error while parsing order data: %v", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
 
 	// Create a context with a timeout of 5 seconds
 	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -35,7 +28,7 @@ func GetCatalog(c *gin.Context) {
 
 	db, _ := c.Get("db")
 
-	sareesByCategory, err := service.GetCatalogByCategory(db.(*gorm.DB), getCatalogResponse.CategoryID)
+	sareesByCategory, err := service.GetCatalog(db.(*gorm.DB))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "error getting the catalog"})
 		return

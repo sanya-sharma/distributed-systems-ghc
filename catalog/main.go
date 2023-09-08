@@ -5,6 +5,7 @@ import (
 	"catalog/routes"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
@@ -12,6 +13,7 @@ import (
 )
 
 func main() {
+
 	config, err := getConfig()
 	if err != nil {
 		log.Fatal("Error loading config:", err)
@@ -30,7 +32,7 @@ func main() {
 		c.Next()
 	})
 	routes.SetupRoutes(router)
-	router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	router.Run(":8083") // listen and serve on 0.0.0.0:8081 (for windows "localhost:8081")
 }
 
 func setupDB(config config.Config) (*gorm.DB, error) {
