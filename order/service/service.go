@@ -5,6 +5,7 @@ import (
 	"log"
 	"order/models"
 	"order/repository"
+	"order/gateways"
 	"time"
 
 	"gorm.io/gorm"
@@ -48,7 +49,16 @@ func PlaceOrder(db *gorm.DB, customerID, productID, quantity int) (order models.
 		return order, err
 	}
 
+	// Place the order and update inventory stock
+	// Implement your order placement and inventory update logic here
+	err = gateways.InitiatePayment(newOrder)
+	if err != nil {
+		log.Printf("error in payment gateway: %v",err)
+		return order, err
+	}
+
 	return *newOrder, nil
+
 }
 
 func updateCatalog(catalogRepo *repository.CatalogRepository, productID int, quantity int) (err error) {
