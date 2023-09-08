@@ -1,12 +1,12 @@
 package service
 
 import (
-	"distributed-systems-ghc/payment/entity"
-	"distributed-systems-ghc/payment/models"
-	paymentMehtods "distributed-systems-ghc/payment/service/payment-methods"
 	"errors"
 	"fmt"
 	"log"
+	"payment/entity"
+	"payment/models"
+	paymentMehtods "payment/service/payment-methods"
 	"strings"
 )
 

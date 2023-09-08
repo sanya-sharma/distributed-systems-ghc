@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"distributed-systems-ghc/models"
 	"gorm.io/gorm"
+	"models"
 )
 
 type CustomerRepository struct {

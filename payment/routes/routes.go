@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"distributed-systems-ghc/payment/handler"
 	"github.com/gin-gonic/gin"
+	"payment/handler"
 )
 
 func SetupRoutes(r *gin.Engine) {
