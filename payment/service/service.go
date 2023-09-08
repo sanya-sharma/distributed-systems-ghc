@@ -30,6 +30,7 @@ func InitiatePayment(payment models.Payment) (err error) {
 		}
 	}
 
+	log.Printf("reurning error from payments")
 	return errors.New("payment was unsuccessful, please try again after some time")
 }
 

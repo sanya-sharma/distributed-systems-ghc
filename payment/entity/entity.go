@@ -7,9 +7,9 @@ import (
 var (
 	PaymentGateways = []string{
 		"Zakpay",
-		"Amex",
-		"Weiss",
-		"Paypal",
+		//"Amex",
+		//"Weiss",
+		//"Paypal",
 	}
 	PaymentGatewaysConfig = []weightedrand.Choice{
 		{Item: "Weiss", Weight: 1},

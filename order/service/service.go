@@ -38,25 +38,25 @@ func PlaceOrder(db *gorm.DB, customerID, productID, quantity int) (order models.
 		return order, err
 	}
 
-	newOrder, err := orderRepo.CreateOrder(&models.Order{
+	newOrder := &models.Order{
 		CustomerID: uint(customer.ID),
 		OrderDate:  time.Now(),
-		Status:     "Created",
+		Status:     "Placed",
 		Created_at: time.Now(),
-	})
-
-	if err != nil {
-		return order, err
 	}
 
 	// Place the order and update inventory stock
-	// Implement your order placement and inventory update logic here
 	err = gateways.InitiatePayment(*newOrder)
 	if err != nil {
-		log.Printf("error in payment gateway: %v", err)
-		return order, err
+		newOrder.Status = "Failed"
+		log.Printf("Error in payment gateway: %v", err)
+		return *newOrder, err
 	}
 
+	newOrder, err = orderRepo.CreateOrder(newOrder)
+	if err != nil {
+		return *newOrder, err
+	}
 	return *newOrder, nil
 
 }
