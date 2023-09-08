@@ -1,7 +1,7 @@
 package paymentmethods
 
 import (
-	"distributed-systems-ghc/payment/service/components"
+	"payment/service/components"
 	"time"
 )
 

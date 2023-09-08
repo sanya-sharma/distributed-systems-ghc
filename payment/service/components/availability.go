@@ -1,9 +1,9 @@
 package components
 
 import (
-	"distributed-systems-ghc/payment/entity"
 	"fmt"
 	"github.com/mroth/weightedrand"
+	"payment/entity"
 )
 
 func CheckAvailability(paymentMethod string) bool {
@@ -17,7 +17,6 @@ func CheckAvailability(paymentMethod string) bool {
 	if paymentMethod == flakyPaymentMethod {
 		return false
 	}
-	fmt.Printf("Payment method %v is available\n", paymentMethod)
 	return true
 
 }

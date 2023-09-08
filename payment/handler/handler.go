@@ -1,13 +1,13 @@
 package handler
 
 import (
-	"distributed-systems-ghc/payment/entity"
-	"distributed-systems-ghc/payment/models"
-	"distributed-systems-ghc/payment/service"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mroth/weightedrand"
 	"net/http"
+	"payment/entity"
+	"payment/models"
+	"payment/service"
 )
 
 func InitiatePayment(c *gin.Context) {

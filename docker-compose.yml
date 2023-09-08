@@ -17,15 +17,27 @@ services:
     networks:
       - mynetwork
 
-  go-app:
+  order-app:
     build:
       context: ./order  # Set the build context to the 'order' directory
       dockerfile: Dockerfile  # Specify the name of the Dockerfile
-    container_name: go-app-container
+    container_name: order-app-container
     depends_on:
       - postgres
     ports:
       - "8080:8080"
+    networks:
+      - mynetwork
+
+  payment-app:
+    build:
+      context: ./payment  # Set the build context to the 'order' directory
+      dockerfile: Dockerfile  # Specify the name of the Dockerfile
+    container_name: payment-app-container
+    depends_on:
+      - postgres
+    ports:
+      - "8082:8082"
     networks:
       - mynetwork
 

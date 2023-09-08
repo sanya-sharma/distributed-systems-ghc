@@ -6,7 +6,7 @@ import (
 
 // Order represents an individual order.
 type Order struct {
-	ID         int  `gorm:"column:id"`
+	OrderID    int  `gorm:"column:id"`
 	CustomerID uint `gorm:"column:customer_id"`
 	OrderDate  time.Time
 	Status     string
