@@ -41,6 +41,18 @@ services:
     networks:
       - mynetwork
 
+  catalog-app:
+    build:
+      context: ./catalog  # Set the build context to the 'order' directory
+      dockerfile: Dockerfile  # Specify the name of the Dockerfile
+    container_name: catalog-app-container
+    depends_on:
+      - postgres
+    ports:
+      - "8083:8083"
+    networks:
+      - mynetwork
+
 networks:
   mynetwork:
 

@@ -27,9 +27,10 @@ func (repo *CatalogRepository) UpdateCatalog(catalog *models.Catalog) error {
 	return result.Error
 }
 
-// GetCatalogByProductID retrieves an catalog record by product ID from the database.
-func (repo *CatalogRepository) GetCatalogByProductID(productID int) (*models.Catalog, error) {
-	var catalog models.Catalog
-	result := repo.DB.First(&catalog, "product_id = ?", productID)
-	return &catalog, result.Error
+// GetCatalog retrieves an catalog record by product ID from the database.
+func (repo *CatalogRepository) GetCatalog() ([]models.Catalog, error) {
+	var catalog []models.Catalog
+	result := repo.DB.Find(&catalog)
+
+	return catalog, result.Error
 }

@@ -6,11 +6,11 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetCatalogByCategory(db *gorm.DB, category int) (response *models.Catalog, err error) {
+func GetCatalog(db *gorm.DB) (response []models.Catalog, err error) {
 	catalogRepo := &repository.CatalogRepository{DB: db} // Initialize with actual repository
-	catalog, err := catalogRepo.GetCatalogByProductID(category)
+	catalog, err := catalogRepo.GetCatalog()
 	if err != nil {
-		return &models.Catalog{}, err
+		return nil, err
 	}
 
 	return catalog, nil
@@ -18,7 +18,7 @@ func GetCatalogByCategory(db *gorm.DB, category int) (response *models.Catalog, 
 func UpdateCatalogByCategory(db *gorm.DB, category int, qty int) (err error) {
 	catalogRepo := &repository.CatalogRepository{DB: db} // Initialize with actual repository
 
-	err = catalogRepo.UpdateCatalog(&models.Catalog{ID: category, StockQty: qty})
+	err = catalogRepo.UpdateCatalog(&models.Catalog{ProductID: category, StockQty: qty})
 	if err != nil {
 		return err
 	}
