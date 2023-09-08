@@ -1,8 +1,8 @@
 package main
 
 import (
-	"distributed-systems-ghc/catalog/config"
-	"distributed-systems-ghc/catalog/routes"
+	"catalog/config"
+	"catalog/routes"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
