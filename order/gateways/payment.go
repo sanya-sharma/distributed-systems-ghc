@@ -3,6 +3,9 @@ package gateways
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"order/config"
 	"order/models"
@@ -31,9 +34,18 @@ func InitiatePayment(order models.Order) error {
 	}
 	initiatePaymentURL := paymentServiceURL + initiatePaymentRoute
 
-	_, err = http.Post(initiatePaymentURL, "application/json", bytes.NewBuffer(requestBody))
+	resp, err := http.Post(initiatePaymentURL, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
 		return err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println("Error reading response body:", err)
+			return err
+		}
+		return errors.New(string(body))
 	}
 
 	return nil
