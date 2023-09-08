@@ -1,9 +1,9 @@
 package handler
 
 import (
+	"catalog/models"
+	"catalog/service"
 	"context"
-	"distributed-systems-ghc/catalog/models"
-	"distributed-systems-ghc/catalog/service"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -30,7 +30,7 @@ func GetCatalog(c *gin.Context) {
 	}
 
 	// Create a context with a timeout of 5 seconds
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	db, _ := c.Get("db")
@@ -43,7 +43,7 @@ func GetCatalog(c *gin.Context) {
 
 	result, _ := json.Marshal(sareesByCategory)
 
-	var sarees []*models.Product
+	var sarees []*models.Catalog
 	if err = json.Unmarshal(result, &sarees); err != nil {
 		log.Fatal(err)
 	}
@@ -66,7 +66,7 @@ func UpdateCatalog(c *gin.Context) {
 	var updateCatalogResponse *models.CatalogResponse
 	err = json.Unmarshal(requestBody, &updateCatalogResponse)
 	// Create a context with a timeout of 5 seconds
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	db, _ := c.Get("db")
