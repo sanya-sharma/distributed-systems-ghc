@@ -20,6 +20,7 @@ func Load(filename string) (Config, error) {
 	var config Config
 	configFile, err := os.Open(filename)
 	if err != nil {
+		go buld
 		return config, err
 	}
 	defer configFile.Close()
