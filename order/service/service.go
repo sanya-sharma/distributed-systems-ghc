@@ -15,8 +15,8 @@ var maxRetries = 3
 
 func PlaceOrder(db *gorm.DB, customerID, productID, quantity int) (order models.Order, err error) {
 	customerRepo := &repository.CustomerRepository{DB: db} // Initialize with actual repository
-	inventoryRepo := &repository.CatalogRepository{DB: db} // Initialize with actual repository
-	// maximum number of downstream retries
+	catalogRepo := &repository.CatalogRepository{DB: db}   // Initialize with actual repository
+	orderRepo := &repository.OrderRepository{DB: db}
 
 	var customer *models.Customer
 	for retry := 0; retry <= maxRetries; retry++ {
@@ -33,11 +33,18 @@ func PlaceOrder(db *gorm.DB, customerID, productID, quantity int) (order models.
 		return order, err
 	}
 
-	newOrder := models.Order{
-		Customer: *customer,
+	err = updateCatalog(catalogRepo, productID, quantity)
+	if err != nil {
+		return order, err
 	}
 
-	err = updateCatalog(inventoryRepo, productID, quantity)
+	newOrder, err := orderRepo.CreateOrder(&models.Order{
+		CustomerID: uint(customer.ID),
+		OrderDate:  time.Now(),
+		Status:     "Created",
+		Created_at: time.Now(),
+	})
+
 	if err != nil {
 		return order, err
 	}
@@ -50,7 +57,8 @@ func PlaceOrder(db *gorm.DB, customerID, productID, quantity int) (order models.
 		return order, err
 	}
 
-	return newOrder, nil
+	return *newOrder, nil
+
 }
 
 func updateCatalog(catalogRepo *repository.CatalogRepository, productID int, quantity int) (err error) {
