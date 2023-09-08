@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"distributed-systems-ghc/catalog/handler"
+	"catalog/handler"
 	"github.com/gin-gonic/gin"
 )
 
