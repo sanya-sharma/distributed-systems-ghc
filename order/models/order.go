@@ -6,12 +6,12 @@ import (
 
 // Order represents an individual order.
 type Order struct {
-	ID         int       `db:"id"`
-	Customer   Customer  `db:"customer"`
-	OrderDate  time.Time `db:"order_date"`
-	Status     string    `db:"status"`
-	Created_at time.Time `db:"created_at"`
-	Updated_at time.Time `db:"updated_at"`
+	ID         int  `gorm:"column:id"`
+	CustomerID uint `gorm:"column:customer_id"`
+	OrderDate  time.Time
+	Status     string
+	Created_at time.Time
+	Updated_at time.Time
 }
 
 type OrderData struct {
