@@ -4,6 +4,8 @@ import (
 	"catalog/models"
 	"catalog/repository"
 	"gorm.io/gorm"
+	"log"
+	"time"
 )
 
 var maxRetries = 3
@@ -14,6 +16,27 @@ func GetCatalog(db *gorm.DB) (response []models.Catalog, err error) {
 
 	for retry := 0; retry <= maxRetries; retry++ {
 		response, err := catalogRepo.GetCatalog()
+		if err == nil {
+			break
+		}
+
+		// Log the retry and sleep before the next attempt
+		log.Printf("Retrying GetCatalog from DB, attempt %d", retry+1)
+		time.Sleep(time.Second * time.Duration(retry+1))
+	}
+	if err != nil {
+		return response, err
+	}
+
+	return response, nil
+}
+
+// GetCatalogByProductID fetches the catalog from DB and returns it
+func GetCatalogByProductID(db *gorm.DB, productID int) (response *models.Catalog, err error) {
+	catalogRepo := &repository.CatalogRepository{DB: db} // Initialize with actual repository
+
+	for retry := 0; retry <= maxRetries; retry++ {
+		response, err = catalogRepo.GetCatalogByProductID(productID)
 		if err == nil {
 			break
 		}

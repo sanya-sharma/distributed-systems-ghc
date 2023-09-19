@@ -7,20 +7,12 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"log"
 	"net/http"
 	"time"
 )
 
 // GetCatalog is the api used to get the saree catalog
 func GetCatalog(c *gin.Context) {
-
-	//var getCatalogResponse *models.CatalogRequest
-	//if err := c.ShouldBindJSON(&getCatalogResponse); err != nil {
-	//	log.Printf("Error while parsing order data: %v", err)
-	//	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	//	return
-	//}
 
 	// Create a context with a timeout of 5 seconds
 	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -34,12 +26,47 @@ func GetCatalog(c *gin.Context) {
 		return
 	}
 
-	result, _ := json.Marshal(sareesByCategory)
+	//_, err = json.Marshal(sareesByCategory)
+	//if err != nil {
+	//	c.JSON(http.StatusInternalServerError, gin.H{"error":"error sending the catalog in response"})
+	//}
 
-	var sarees []*models.Catalog
-	if err = json.Unmarshal(result, &sarees); err != nil {
-		log.Fatal(err)
+	c.JSON(http.StatusOK, sareesByCategory)
+	c.Header("Content-Type", "application/json")
+
+	return
+}
+
+// GetCatalogByProductID is the api used to get the saree catalog by a particular productID
+func GetCatalogByProductID(c *gin.Context) {
+
+	// Create a context with a timeout of 5 seconds
+	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	requestBody, err := c.GetRawData()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read request body"})
+		return
 	}
+
+	var getCatalogRequest *models.Catalog
+	err = json.Unmarshal(requestBody, &getCatalogRequest)
+
+	db, _ := c.Get("db")
+
+	sareesByCategory, err := service.GetCatalogByProductID(db.(*gorm.DB), getCatalogRequest.ProductID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error getting the catalog"})
+		return
+	}
+
+	//result, _ := json.Marshal(sareesByCategory)
+
+	//var sarees []*models.Catalog
+	//if err = json.Unmarshal(result, &sarees); err != nil {
+	//	log.Fatal(err)
+	//}
 
 	c.JSON(http.StatusOK, sareesByCategory)
 	c.Header("Content-Type", "application/json")

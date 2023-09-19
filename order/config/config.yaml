@@ -1,7 +1,11 @@
 service_url:
-  payment: http://payment-app:8082
+  payment: http://192.168.1.3:8082
+  catalog: http://192.168.1.3:8083
 
 api_routes:
   initiate-payment: /initiate-payment
   get-available-payment-methods: /get-available-payment-methods
   rollback-payment: /rollback-payment
+  get-catalog-by-productid: /get-catalog-by-productid
+  update-catalog: /update-catalog
+

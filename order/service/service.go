@@ -87,8 +87,9 @@ func updateCatalog(catalogRepo *repository.CatalogRepository, productID int, qua
 		}
 	}()
 
-	var inventory *models.Catalog
-	inventory, err = catalogRepo.GetCatalogByProductID(productID)
+	inventory, err := gateways.GetCatalog(&models.Catalog{
+		ID: productID,
+	})
 	if err != nil {
 		return err
 	}
