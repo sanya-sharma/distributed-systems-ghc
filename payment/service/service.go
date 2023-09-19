@@ -21,16 +21,26 @@ func InitiatePayment(payment models.Payment) (err error) {
 
 		paymentContext := &PaymentContext{}
 		paymentContext.SetPaymentMethod(paymentGatewayClient)
+		for retry := 0; retry <= maxRetries; retry++ {
+			completed := paymentContext.ExecutePayment()
+			if !completed {
+				break
+			}
+
+			// Log the retry and sleep before the next attempt
+			log.Printf("Payment gateway %v is unavailable\n Retrying payment, attempt %d", paymentGateway, retry+1)
+			time.Sleep(time.Second * time.Duration(retry+1))
+		}
 		completed := paymentContext.ExecutePayment()
 		if !completed {
-			log.Printf("Payment gateway %v is unavailable\n", paymentGateway)
+			log.Printf("Could not attempt payment via %v gateway\n", paymentGateway)
 		} else {
 			log.Printf("Payment successful\n")
 			return nil
 		}
 	}
 
-	log.Printf("reurning error from payments")
+	log.Printf("Your payment could not be processed")
 	return errors.New("payment was unsuccessful, please try again after some time")
 }
 
