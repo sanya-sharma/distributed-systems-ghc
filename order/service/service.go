@@ -53,12 +53,21 @@ func PlaceOrder(db *gorm.DB, customerID, productID, quantity int) (order models.
 		return *newOrder, err
 	}
 
-	newOrder, err = orderRepo.CreateOrder(newOrder)
+	for retry := 0; retry <= maxRetries; retry++ {
+		newOrder, err = orderRepo.CreateOrder(newOrder)
+		if err == nil {
+			break
+		}
+
+		// Log the retry and sleep before the next attempt
+		log.Printf("Retrying CreateOrder, attempt %d", retry+1)
+		time.Sleep(time.Second * time.Duration(retry+1))
+	}
 	if err != nil {
 		return *newOrder, err
 	}
-	return *newOrder, nil
 
+	return *newOrder, nil
 }
 
 func updateCatalog(catalogRepo *repository.CatalogRepository, productID int, quantity int) (err error) {
@@ -89,10 +98,21 @@ func updateCatalog(catalogRepo *repository.CatalogRepository, productID int, qua
 		return errors.New("insufficient stock")
 	}
 
-	inventory.StockQty -= quantity
-	if err := catalogRepo.UpdateCatalog(inventory); err != nil {
+	for retry := 0; retry <= maxRetries; retry++ {
+		err := catalogRepo.UpdateCatalog(inventory)
+		if err == nil {
+			break
+		}
+
+		// Log the retry and sleep before the next attempt
+		log.Printf("Retrying UpdateCatalog, attempt %d", retry+1)
+		time.Sleep(time.Second * time.Duration(retry+1))
+	}
+	if err != nil {
 		tx.Rollback()
 		return errors.New("failed to update catalog")
 	}
+	inventory.StockQty -= quantity
+
 	return
 }
