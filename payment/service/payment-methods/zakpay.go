@@ -10,7 +10,7 @@ type Zakpay struct{}
 var zakpayClient = "Zakpay"
 
 func (p *Zakpay) Execute() bool {
-	duration := 5 * time.Second
+	duration := 2 * time.Second
 	isClientAvailable := components.CheckAvailability(zakpayClient)
 	time.Sleep(duration)
 	return isClientAvailable

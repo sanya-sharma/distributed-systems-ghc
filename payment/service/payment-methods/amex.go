@@ -1,7 +1,6 @@
 package paymentmethods
 
 import (
-	"payment/service/components"
 	"time"
 )
 
@@ -11,9 +10,9 @@ var amexClient = "Amex"
 
 func (p *Amex) Execute() bool {
 	duration := 2 * time.Second
-	isClientAvailable := components.CheckAvailability(amexClient)
+	//isClientAvailable := components.CheckAvailability(amexClient)
 	time.Sleep(duration)
-	return isClientAvailable
+	return false
 }
 
 func (p *Amex) Rollback() error {

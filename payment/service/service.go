@@ -14,27 +14,28 @@ import (
 var maxRetries = 3
 
 func InitiatePayment(payment models.Payment) (err error) {
+	var completed bool
 	for _, paymentGateway := range entity.PaymentGateways {
 		paymentGatewayClient := getPaymentMethod(paymentGateway)
 		if paymentGatewayClient == nil {
 			return errors.New("invalid payment gateway")
 		}
 
-		log.Printf("Initiating payment using %s gateway for OrderID %d...\n", paymentGateway, payment.OrderID)
+		log.Printf("Initiating payment using %s gateway for OrderID %d \n", paymentGateway, payment.OrderID)
 
 		paymentContext := &PaymentContext{}
 		paymentContext.SetPaymentMethod(paymentGatewayClient)
+
 		for retry := 0; retry <= maxRetries; retry++ {
-			completed := paymentContext.ExecutePayment()
-			if !completed {
+			completed = paymentContext.ExecutePayment()
+			if completed {
 				break
 			}
-
 			// Log the retry and sleep before the next attempt
 			log.Printf("Payment gateway %v is unavailable\n Retrying payment, attempt %d", paymentGateway, retry+1)
 			time.Sleep(time.Second * time.Duration(retry+1))
 		}
-		completed := paymentContext.ExecutePayment()
+
 		if !completed {
 			log.Printf("Could not attempt payment via %v gateway\n", paymentGateway)
 		} else {
@@ -49,14 +50,6 @@ func InitiatePayment(payment models.Payment) (err error) {
 
 func RollbackPayment(payment models.Payment) (err error) {
 	fmt.Printf("Rolling back payment with ID %d...\n", payment.ID)
-	//todo no payment method to pass
-	//paymentMethod := getPaymentMethod(strings.ToLower(payment.PaymentMethod))
-	//if paymentMethod == nil {
-	//	return errors.New("Invalid payment method")
-	//}
-	//paymentContext := &PaymentContext{}
-	//paymentContext.SetPaymentMethod(paymentMethod)
-	//err = paymentContext.RollbackPayment()
 
 	return nil
 }

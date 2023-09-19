@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/gin-gonic/gin v1.9.1
+	github.com/jmcvetta/randutil v0.0.0-20150817122601-2bb1b664bcff
 	github.com/mroth/weightedrand v1.0.0
 	gorm.io/driver/postgres v1.5.2
 	gorm.io/gorm v1.25.4

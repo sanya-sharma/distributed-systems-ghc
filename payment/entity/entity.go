@@ -1,19 +1,20 @@
 package entity
 
 import (
-	"github.com/mroth/weightedrand"
+	"github.com/jmcvetta/randutil"
 )
 
 var (
 	PaymentGateways = []string{
+		"Amex",
 		"Zakpay",
-		//"Amex",
 		//"Weiss",
 		//"Paypal",
+
 	}
-	PaymentGatewaysConfig = []weightedrand.Choice{
+	PaymentGatewaysConfig = []randutil.Choice{
 		{Item: "Weiss", Weight: 1},
-		{Item: "Zakpay", Weight: 9},
+		{Item: "Zakpay", Weight: 80},
 		{Item: "Paypal", Weight: 0},
 		{Item: "Amex", Weight: 2},
 	}
