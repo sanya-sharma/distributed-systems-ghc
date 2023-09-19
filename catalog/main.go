@@ -1,4 +1,4 @@
-package main
+kpackage main
 
 import (
 	"catalog/config"
