@@ -24,6 +24,7 @@ func PlaceOrder(c *gin.Context) {
 		return
 	}
 
+	log.Printf("Recieved place order request for: %v", orderData)
 	db, _ := c.Get("db")
 	// Call the service layer to handle the order placement
 	order, err := service.PlaceOrder(db.(*gorm.DB), orderData.CustomerID, orderData.ProductID, orderData.Quantity)

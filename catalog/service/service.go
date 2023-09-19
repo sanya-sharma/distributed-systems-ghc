@@ -54,9 +54,8 @@ func GetCatalogByProductID(db *gorm.DB, productID int) (response *models.Catalog
 }
 
 // UpdateCatalog updates the catalog DB for given product ID and stockQty
-func UpdateCatalog(db *gorm.DB, category int, quantity int) (err error) {
+func UpdateCatalog(db *gorm.DB, productID int, quantity int) (err error) {
 	catalogRepo := &repository.CatalogRepository{DB: db} // Initialize with actual repository
-
 	// Start a new transaction
 	tx := catalogRepo.DB.Begin()
 	if tx.Error != nil {
@@ -66,14 +65,14 @@ func UpdateCatalog(db *gorm.DB, category int, quantity int) (err error) {
 	defer func() {
 		if err != nil {
 			tx.Rollback()
-			err = errors.New("failed to update catalog")
+			log.Printf("error updating the catalog with productID: %v, quantity: %v with err: %v ", productID, quantity, err)
 		} else {
 			tx.Commit()
 		}
 	}()
 
 	var inventory *models.Catalog
-	inventory, err = catalogRepo.GetCatalogByProductID(category)
+	inventory, err = catalogRepo.GetCatalogByProductID(productID)
 	if err != nil {
 		return err
 	}

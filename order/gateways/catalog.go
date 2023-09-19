@@ -11,14 +11,13 @@ import (
 	"order/models"
 )
 
-func UpdateCatalog(inventory *models.Catalog) (err error) {
-	catalogInventory, _ := json.Marshal(inventory)
+func UpdateCatalog(catalog *models.Catalog) (err error) {
 
-	requestBody, err := json.Marshal(catalogInventory)
+	requestBody, err := json.Marshal(catalog)
 	if err != nil {
 		return err
 	}
-
+	log.Printf("gateway : ", catalog.ID, " ", catalog.StockQty)
 	catalogServiceURL, err := config.ReadServiceConfig("catalog")
 	if err != nil {
 		return err

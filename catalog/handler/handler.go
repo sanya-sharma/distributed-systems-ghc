@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"log"
 	"net/http"
 	"time"
 )
@@ -25,11 +26,6 @@ func GetCatalog(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "error getting the catalog"})
 		return
 	}
-
-	//_, err = json.Marshal(sareesByCategory)
-	//if err != nil {
-	//	c.JSON(http.StatusInternalServerError, gin.H{"error":"error sending the catalog in response"})
-	//}
 
 	c.JSON(http.StatusOK, sareesByCategory)
 	c.Header("Content-Type", "application/json")
@@ -61,13 +57,6 @@ func GetCatalogByProductID(c *gin.Context) {
 		return
 	}
 
-	//result, _ := json.Marshal(sareesByCategory)
-
-	//var sarees []*models.Catalog
-	//if err = json.Unmarshal(result, &sarees); err != nil {
-	//	log.Fatal(err)
-	//}
-
 	c.JSON(http.StatusOK, sareesByCategory)
 	c.Header("Content-Type", "application/json")
 
@@ -80,14 +69,15 @@ func UpdateCatalog(c *gin.Context) {
 	// Create a context with a timeout of 5 seconds
 	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	requestBody, err := c.GetRawData()
+	var updateCatalogRequest *models.Catalog
+
+	err := c.ShouldBindJSON(&updateCatalogRequest)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read request body"})
 		return
 	}
 
-	var updateCatalogRequest *models.Catalog
-	err = json.Unmarshal(requestBody, &updateCatalogRequest)
+	log.Printf("Recieved request for update catalog: %v", updateCatalogRequest)
 
 	db, _ := c.Get("db")
 	err = service.UpdateCatalog(db.(*gorm.DB), updateCatalogRequest.ProductID, updateCatalogRequest.StockQty)
