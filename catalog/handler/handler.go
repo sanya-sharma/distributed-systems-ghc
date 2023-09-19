@@ -50,6 +50,10 @@ func GetCatalog(c *gin.Context) {
 // UpdateCatalog is the api used to update the saree catalog
 func UpdateCatalog(c *gin.Context) {
 
+	// Create a context with a timeout of 5 seconds
+	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	
 	requestBody, err := c.GetRawData()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read request body"})
