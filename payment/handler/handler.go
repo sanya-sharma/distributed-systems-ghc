@@ -13,6 +13,10 @@ import (
 func InitiatePayment(c *gin.Context) {
 	var payment models.Payment
 
+	// Create a context with a timeout of 5 seconds
+	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	if err := c.ShouldBindJSON(&payment); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Error reading request": err.Error()})
 		return
@@ -31,6 +35,10 @@ func InitiatePayment(c *gin.Context) {
 
 func RollbackPayment(c *gin.Context) {
 	var payment models.Payment
+
+	// Create a context with a timeout of 5 seconds
+	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	if err := c.ShouldBindJSON(&payment); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
