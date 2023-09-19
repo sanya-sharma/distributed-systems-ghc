@@ -6,6 +6,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var maxRetries = 3
+
 // GetCatalogs fetches the catalog from DB and returns it
 func GetCatalog(db *gorm.DB) (response []models.Catalog, err error) {
 	catalogRepo := &repository.CatalogRepository{DB: db} // Initialize with actual repository
