@@ -33,7 +33,7 @@ func Load(filename string) (Config, error) {
 }
 
 func ReadServiceConfig(service string) (string, error) {
-	configFile := "config/config.yaml"
+	configFile := "config/config.json"
 	absConfigPath, err := filepath.Abs(configFile)
 	if err != nil {
 		fmt.Println("Error getting absolute path:", err)
@@ -52,7 +52,7 @@ func ReadServiceConfig(service string) (string, error) {
 
 
 func ReadAPIConfig(api string) (string, error) {
-	configFile := "config/config.yaml"
+	configFile := "config/config.json"
 	absConfigPath, err := filepath.Abs(configFile)
 	if err != nil {
 		fmt.Println("Error getting absolute path:", err)
