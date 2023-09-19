@@ -45,19 +45,30 @@ If Postman is installed, it will display the Postman version. If it's not instal
 * Visit the official Postman download page: https://www.postman.com/downloads/
 * Download the Postman app for your operating system.
 * Install Postman following the installation instructions provided for your OS.
+* Use this link to access sample requests for the lab: [Postman GHC Collection](https://winter-star-7764.postman.co/workspace/GHC~d573817e-ed58-47c3-9649-154b689c53a5/collection/29024639-a2ec43b9-7243-4c17-9e70-c146c0b26dab?action=share&creator=29024639)
 
 
-### Workshop 1:
-1. **Open the docker desktop app**
-2. **Run the docker compose command**
+### Lab Activity 1:
+**1. Open your docker desktop app or run the following command**
+```
+open -a Docker 
+```
+**2. Run the docker compose command on the terminal**
 ````
 docker-compose up --build
 ````
-3. **Ensure the applications are up and running by looking at the docker logs**
-4. **Open the postman app and import the collection:** url
-5. **Test the Get Catalog API request**
-6. **Test the Place Order API request**
+**3. Ensure the applications are up and running by looking at the docker logs**
 
-### Workshop 2:
+**4. Open the postman app and import the collection:** [Postman GHC Collection](https://winter-star-7764.postman.co/workspace/GHC~d573817e-ed58-47c3-9649-154b689c53a5/collection/29024639-a2ec43b9-7243-4c17-9e70-c146c0b26dab?action=share&creator=29024639)
 
-1. **Add changes**
+**5. Test the Get Catalog API request**
+
+View the API response to see all the saree varieties available along with their description, retail price and quantity available
+
+**6. Test the Place Order API request**
+
+Navigate to the [Payment Service](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go#L16). As you can see the service retries each of the available payment gateway available
+
+### Lab Activity 2:
+
+**1. Add changes**
