@@ -1,7 +1,0 @@
-service_url:
-  payment: http://payment-app:8082
-
-api_routes:
-  initiate-payment: /initiate-payment
-  get-available-payment-methods: /get-available-payment-methods
-  rollback-payment: /rollback-payment
