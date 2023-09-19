@@ -71,8 +71,8 @@ func PlaceOrder(db *gorm.DB, customerID, productID, quantity int) (order models.
 func updateCatalog(productID int, quantity int) (err error) {
 
 	err = gateways.UpdateCatalog(&models.Catalog{
-		ID:       productID,
-		StockQty: quantity,
+		ProductID: productID,
+		StockQty:  quantity,
 	})
 	if err != nil {
 		return err

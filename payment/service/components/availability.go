@@ -2,19 +2,20 @@ package components
 
 import (
 	"fmt"
-	"github.com/mroth/weightedrand"
+	"github.com/jmcvetta/randutil"
 	"payment/entity"
 )
 
 func CheckAvailability(paymentMethod string) bool {
 
-	chooser, err := weightedrand.NewChooser(entity.PaymentGatewaysConfig...)
+	chooser, err := randutil.WeightedChoice(entity.PaymentGatewaysConfig)
+	//NewChooser(entity.PaymentGatewaysConfig...)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return false
 	}
-	flakyPaymentMethod := chooser.Pick().(string)
-	if paymentMethod == flakyPaymentMethod {
+	//flakyPaymentMethod := chooser.
+	if paymentMethod == chooser.Item {
 		return false
 	}
 	return true
