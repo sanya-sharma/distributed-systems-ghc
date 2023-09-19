@@ -1,13 +1,16 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mroth/weightedrand"
+	"log"
 	"net/http"
 	"payment/entity"
 	"payment/models"
 	"payment/service"
+	"time"
 )
 
 func InitiatePayment(c *gin.Context) {
@@ -21,6 +24,8 @@ func InitiatePayment(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"Error reading request": err.Error()})
 		return
 	}
+
+	log.Printf("Recieved request to initiate payment: %v", payment)
 
 	if err := service.InitiatePayment(payment); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"Error initiating the payment": err.Error()})
