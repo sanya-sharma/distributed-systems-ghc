@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+var maxRetries = 3
+
 func InitiatePayment(payment models.Payment) (err error) {
 	for _, paymentGateway := range entity.PaymentGateways {
 		paymentGatewayClient := getPaymentMethod(paymentGateway)
