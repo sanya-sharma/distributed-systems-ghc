@@ -10,6 +10,11 @@ import (
 )
 
 func PlaceOrder(c *gin.Context) {
+
+	// Create a context with a timeout of 5 seconds
+	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	
 	var orderData models.OrderData
 	if err := c.ShouldBindJSON(&orderData); err != nil {
 		log.Printf("Error while parsing order data: %v", err)
