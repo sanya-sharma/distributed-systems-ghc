@@ -6,6 +6,5 @@ api_routes:
   initiate-payment: /initiate-payment
   get-available-payment-methods: /get-available-payment-methods
   rollback-payment: /rollback-payment
-  get-catalog-by-productid: /get-catalog-by-productid
   update-catalog: /update-catalog
 

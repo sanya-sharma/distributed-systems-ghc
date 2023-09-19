@@ -11,50 +11,37 @@ import (
 	"order/models"
 )
 
-func GetCatalog(inventory *models.Catalog) (catalog *models.Catalog, err error) {
+func UpdateCatalog(inventory *models.Catalog) (err error) {
 	catalogInventory, _ := json.Marshal(inventory)
 
 	requestBody, err := json.Marshal(catalogInventory)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	catalogServiceURL, err := config.ReadServiceConfig("catalog")
 	if err != nil {
-		return nil, err
+		return err
 	}
-	getCatalogRoute, err := config.ReadAPIConfig("get-catalog-by-productid")
+	updateCatalogRoute, err := config.ReadAPIConfig("update-catalog")
 	if err != nil {
-		return nil, err
+		return err
 	}
-	getCatalogURL := catalogServiceURL + getCatalogRoute
+	updateCatalogURL := catalogServiceURL + updateCatalogRoute
 
-	resp, err := http.Post(getCatalogURL, "application/json", bytes.NewBuffer(requestBody))
+	resp, err := http.Post(updateCatalogURL, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if resp.StatusCode != http.StatusOK {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			log.Println("Error reading response body:", err)
-			return nil, err
+			return err
 		}
-		return nil, errors.New(string(body))
+		return errors.New(string(body))
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Println("Error reading response body:", err)
-		return nil, err
-	}
-
-	var sarees *models.Catalog
-	err = json.Unmarshal(body, &sarees)
-	if err != nil {
-		log.Println("Error unmarshalling response body:", err)
-		return nil, err
-	}
-
-	return sarees, nil
+	return nil
 }

@@ -80,21 +80,17 @@ func UpdateCatalog(c *gin.Context) {
 	// Create a context with a timeout of 5 seconds
 	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	
 	requestBody, err := c.GetRawData()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read request body"})
 		return
 	}
 
-	var updateCatalogResponse *models.CatalogResponse
-	err = json.Unmarshal(requestBody, &updateCatalogResponse)
-	// Create a context with a timeout of 5 seconds
-	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	var updateCatalogRequest *models.Catalog
+	err = json.Unmarshal(requestBody, &updateCatalogRequest)
 
 	db, _ := c.Get("db")
-	err = service.UpdateCatalogByCategory(db.(*gorm.DB), updateCatalogResponse.CategoryID, updateCatalogResponse.Quantity)
+	err = service.UpdateCatalog(db.(*gorm.DB), updateCatalogRequest.ProductID, updateCatalogRequest.StockQty)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "error updating the catalog"})
 		return

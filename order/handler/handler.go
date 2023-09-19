@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"order/models"
 	"order/service"
+	"time"
 )
 
 func PlaceOrder(c *gin.Context) {
@@ -14,7 +16,7 @@ func PlaceOrder(c *gin.Context) {
 	// Create a context with a timeout of 5 seconds
 	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	
+
 	var orderData models.OrderData
 	if err := c.ShouldBindJSON(&orderData); err != nil {
 		log.Printf("Error while parsing order data: %v", err)
