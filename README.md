@@ -59,7 +59,10 @@ docker-compose up --build
 ````
 **3. Ensure the applications are up and running by looking at the docker logs**
 
-**4. Open the postman app and import the collection:** [Postman GHC Collection](https://winter-star-7764.postman.co/workspace/GHC~d573817e-ed58-47c3-9649-154b689c53a5/collection/29024639-a2ec43b9-7243-4c17-9e70-c146c0b26dab?action=share&creator=29024639)
+**4. Import the postman collection** 
+* Open this link: [Postman GHC Collection](https://winter-star-7764.postman.co/workspace/GHC~d573817e-ed58-47c3-9649-154b689c53a5/collection/29024639-a2ec43b9-7243-4c17-9e70-c146c0b26dab?action=share&creator=29024639)
+* Click on the three dots next to the GHC Collection and fork the collection
+* Open your Postman app, you should be able to view the collection. (Please ensure you are using the same login on the app and web view)
 
 **5. Test the Get Catalog API request**
 
