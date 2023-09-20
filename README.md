@@ -74,4 +74,35 @@ Navigate to the [Payment Service](https://github.com/sanya-sharma/distributed-sy
 
 ### Lab Activity 2:
 
-**1. Add changes**
+**1. Add the following circuit breaker to the payment [service.go](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go) file**
+
+
+    func (cb *CircuitBreaker) ExecuteTransaction(operation func() bool, consecutiveFails int, paymentGateway string) bool {
+    cb.mu.Lock()
+    defer cb.mu.Unlock()
+	if cb.open {
+        log.Printf("%v is down, not retrying", paymentGateway)
+		return false
+    }
+
+	completed := operation()
+
+	if !completed {
+        if consecutiveFails >= 3 {
+            cb.open = true
+            log.Printf("Circuit is open for %v", paymentGateway)
+            go cb.ResetAfterDelay(paymentGateway)
+        }
+    }
+
+	return completed
+    }
+
+    func (cb *CircuitBreaker) ResetAfterDelay(paymentGateway string) {
+    // Schedule a reset of the circuit after a delay
+    time.Sleep(10 * time.Second)
+    cb.mu.Lock()
+    cb.open = false
+    cb.mu.Unlock()
+    log.Printf("Circuit is reset for %v", paymentGateway)
+}
