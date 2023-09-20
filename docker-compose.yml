@@ -11,7 +11,7 @@ services:
       POSTGRES_DB: db
     volumes:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - postgres_data_2:/var/lib/postgresql/data
+      - postgres_data_volume:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
@@ -57,5 +57,5 @@ networks:
   mynetwork:
 
 volumes:
-  postgres_data_2:
+  postgres_data_volume:
 
