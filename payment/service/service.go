@@ -9,33 +9,47 @@ import (
 	paymentMehtods "payment/service/payment-methods"
 	"strings"
 	"time"
+	"sync"
 )
 
 var maxRetries = 3
 
+type CircuitBreaker struct {
+    mu             sync.Mutex
+    open           bool
+}
+
 func InitiatePayment(payment models.Payment) (err error) {
-	var completed bool
 	for _, paymentGateway := range entity.PaymentGateways {
 		paymentGatewayClient := getPaymentMethod(paymentGateway)
 		if paymentGatewayClient == nil {
 			return errors.New("invalid payment gateway")
 		}
 
-		log.Printf("Initiating payment using %s gateway for OrderID %d \n", paymentGateway, payment.OrderID)
+		log.Printf("Initiating payment using %s gateway for OrderID %d...\n", paymentGateway, payment.OrderID)
 
 		paymentContext := &PaymentContext{}
 		paymentContext.SetPaymentMethod(paymentGatewayClient)
 
+		// Create a new CircuitBreaker
+		circuit := &CircuitBreaker{}
+		var completed bool
+
 		for retry := 0; retry <= maxRetries; retry++ {
-			completed = paymentContext.ExecutePayment()
+
+			if retry != 0 {
+				// Log the retry and sleep before the next attempt
+				log.Printf("Payment gateway %v is unavailable. Retrying payment, attempt %d", paymentGateway, retry)
+				time.Sleep(time.Second * time.Duration(retry))
+			}
+
+			completed = circuit.ExecuteTransaction(func() bool {
+				return paymentContext.ExecutePayment()
+			}, retry+1, paymentGateway)
 			if completed {
 				break
 			}
-			// Log the retry and sleep before the next attempt
-			log.Printf("Payment gateway %v is unavailable\n Retrying payment, attempt %d", paymentGateway, retry+1)
-			time.Sleep(time.Second * time.Duration(retry+1))
 		}
-
 		if !completed {
 			log.Printf("Could not attempt payment via %v gateway\n", paymentGateway)
 		} else {
@@ -50,6 +64,7 @@ func InitiatePayment(payment models.Payment) (err error) {
 
 func RollbackPayment(payment models.Payment) (err error) {
 	fmt.Printf("Rolling back payment with ID %d...\n", payment.ID)
+	
 
 	return nil
 }
@@ -67,4 +82,35 @@ func getPaymentMethod(paymentGateway string) PaymentGateways {
 	default:
 		return nil
 	}
+}
+
+func (cb *CircuitBreaker) ExecuteTransaction(operation func() bool, consecutiveFails int, paymentGateway string) bool {
+    cb.mu.Lock()
+    defer cb.mu.Unlock()
+
+	if cb.open {
+        log.Printf("%v is down, not retrying", paymentGateway)
+		return false
+    }
+	
+	completed := operation()
+	
+	if !completed {
+        if consecutiveFails >= 3 {
+            cb.open = true
+            log.Printf("Circuit is open for %v", paymentGateway)
+            go cb.ResetAfterDelay(paymentGateway)
+        }
+    }
+
+	return completed
+}
+
+func (cb *CircuitBreaker) ResetAfterDelay(paymentGateway string) {
+    // Schedule a reset of the circuit after a delay
+    time.Sleep(10 * time.Second)
+    cb.mu.Lock()
+    cb.open = false
+    cb.mu.Unlock()
+    log.Printf("Circuit is reset for %v", paymentGateway)
 }
