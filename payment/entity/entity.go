@@ -13,8 +13,8 @@ var (
 	PaymentGateways = []string{
 		PaymentGatewayAmex,
 		PaymentGatewayZakpay,
-		//PaymentGatewayWeiss,
-		//PaymentGatewayPaypal,
+		PaymentGatewayWeiss,
+		PaymentGatewayPaypal,
 
 	}
 	PaymentGatewaysConfig = []randutil.Choice{
