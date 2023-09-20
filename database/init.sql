@@ -74,6 +74,6 @@ VALUES
     ('Bob Johnson', 'bjohnson@example.com', '555-123-4567', '789 Oak St, Somewhere, USA', 3, CURRENT_TIMESTAMP, NULL);
 
 INSERT INTO catalogs (name, description, price, stock_qty) VALUES
-    ('Product 4', 'Cotton saree solid', 1999.99, 100),
-    ('Product 5', 'Cotton saree printed’', 2999.99, 150),
-    ('Product 6', 'Solid chiffon saree’', 5999.99, 200);
+    ('Cotton saree solid', 'Cotton saree in red color', 1999.99, 500),
+    ('Cotton saree printed', 'Multicolor printed Cotton saree', 2999.99, 150),
+    ('Solid chiffon saree', 'Solid chiffon saree in green color', 5999.99, 200);
