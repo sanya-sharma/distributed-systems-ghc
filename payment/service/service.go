@@ -9,6 +9,7 @@ import (
 	"time"
 	"strings"
 	"time"
+	"sync"
 )
 
 var maxRetries = 3
@@ -20,8 +21,8 @@ var maxRetries = 3
 	2. open - Stores the state of circuit (open/close)
 */
 type CircuitBreaker struct {
-	mu   sync.Mutex
-	open bool
+    mu             sync.Mutex
+    open           bool
 }
 
 var circuitBreakerMap = map[string]*CircuitBreaker{}
@@ -105,23 +106,23 @@ func getPaymentMethod(paymentGateway string) PaymentGateways {
 	Circuit will be reset after a certain interval of time.
 */
 func (cb *CircuitBreaker) ExecuteTransaction(operation func() bool, consecutiveFails int, paymentGateway string) bool {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
+    cb.mu.Lock()
+    defer cb.mu.Unlock()
 
 	if cb.open {
-		log.Printf("%v is down, not retrying", paymentGateway)
+        log.Printf("%v is down, not retrying", paymentGateway)
 		return false
-	}
-
+    }
+	
 	completed := operation()
-
+	
 	if !completed {
-		if consecutiveFails >= 3 {
-			cb.open = true
-			log.Printf("Circuit is open for %v", paymentGateway)
-			go cb.ResetAfterDelay(paymentGateway)
-		}
-	}
+        if consecutiveFails >= 3 {
+            cb.open = true
+            log.Printf("Circuit is open for %v", paymentGateway)
+            go cb.ResetAfterDelay(paymentGateway)
+        }
+    }
 
 	return completed
 }
