@@ -76,33 +76,57 @@ Navigate to the [Payment Service](https://github.com/sanya-sharma/distributed-sy
 
 **1. Add the following circuit breaker to the payment [service.go](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go) file**
 
-
-    func (cb *CircuitBreaker) ExecuteTransaction(operation func() bool, consecutiveFails int, paymentGateway string) bool {
-    cb.mu.Lock()
-    defer cb.mu.Unlock()
-	if cb.open {
-        log.Printf("%v is down, not retrying", paymentGateway)
-		return false
+```
+    //CircuitBreaker structure 
+    type CircuitBreaker struct {
+        mu   sync.Mutex
+        open bool
     }
 
-	completed := operation()
+    // ExecuteTransaction executes the transaction using circuit breaker.
+    func (cb *CircuitBreaker) ExecuteTransaction(operation func() bool, consecutiveFails int, paymentGateway string) bool {
+        cb.mu.Lock()
+        defer cb.mu.Unlock()
+        if cb.open {
+            // Print log informing user of open circuit and that we are not retrying
+            // return from this function
+        }
 
-	if !completed {
-        if consecutiveFails >= 3 {
-            cb.open = true
-            log.Printf("Circuit is open for %v", paymentGateway)
-            go cb.ResetAfterDelay(paymentGateway)
+        completed := operation()
+
+        if !completed {
+            // We encountered a failure. 
+            // If the number of consecutive failures is greater than the desired failure count
+            // open the circuit.
+            // as a best practice, print the log statement informing opening of the circuit.
+            // Add the below function to add delayed reset to close the circuit after certain time to retry after we give our 
+            // downstream a break.
+        }
+
+        return completed
+    }
+
+    // ResetAfterDelay resets the circuit after a delay.
+    func (cb *CircuitBreaker) ResetAfterDelay(paymentGateway string) {
+        // Make the system take a sleep for sometime. 
+        // close the circuit.
+        // Best Practice: Add the log to inform user that the circuit is now reset for the selected payment gateway)
+    }
+
+    // Modify the InitiatePayment function to call above circuit breaker code to execute payment
+    for retry := 0; retry <= maxRetries; retry++ {
+
+        if retry != 0 {
+            // Log the retry and sleep before the next attempt
+            log.Printf("Payment gateway %v is unavailable. Retrying payment, attempt %d", paymentGateway, retry)
+            time.Sleep(time.Second * time.Duration(retry))
+        }
+
+        completed = circuit.ExecuteTransaction(func() bool {
+            return paymentContext.ExecutePayment()
+        }, retry, paymentGateway)
+        if completed {
+            break
         }
     }
-
-	return completed
-    }
-
-    func (cb *CircuitBreaker) ResetAfterDelay(paymentGateway string) {
-    // Schedule a reset of the circuit after a delay
-    time.Sleep(10 * time.Second)
-    cb.mu.Lock()
-    cb.open = false
-    cb.mu.Unlock()
-    log.Printf("Circuit is reset for %v", paymentGateway)
-}
+```
