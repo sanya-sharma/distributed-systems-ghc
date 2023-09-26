@@ -1,10 +1,10 @@
 # Building Resilient Distributed Systems With Golang
 This repo is designed solely for the purpose of GHC'23 Level Up Lab titled 'Building Resilient Distributed Systems With Golang'.
 
-Presenters:
-    1. [Aayushi Chadha](https://www.linkedin.com/in/aayushi-chadha/)
-    2. [Sanya Sharma](https://www.linkedin.com/in/sanyasharma2511/)
-    3. [Utsha Sinha](https://www.linkedin.com/in/utsha-sinha1510)
+Presenters:</br>
+    1. [Aayushi Chadha](https://www.linkedin.com/in/aayushi-chadha/)</br>
+    2. [Sanya Sharma](https://www.linkedin.com/in/sanyasharma2511/)</br>
+    3. [Utsha Sinha](https://www.linkedin.com/in/utsha-sinha1510)</br>
 
 
 ### Lab Prerequisites
