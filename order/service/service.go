@@ -10,7 +10,11 @@ import (
 	"gorm.io/gorm"
 )
 
-var maxRetries = 3
+var (
+	maxRetries        = 3
+	orderStatusPlaced = "Placed"
+	orderStatusFailed = "Failed"
+)
 
 func PlaceOrder(db *gorm.DB, customerID, productID, quantity int) (order models.Order, err error) {
 	customerRepo := &repository.CustomerRepository{DB: db} // Initialize with actual repository
@@ -24,7 +28,7 @@ func PlaceOrder(db *gorm.DB, customerID, productID, quantity int) (order models.
 		}
 
 		// Log the retry and sleep before the next attempt
-		log.Printf("Retrying GetCustomerByID, attempt %d", retry+1)
+		log.Printf("Retry  attempt %d to retrieve customerID", retry+1)
 		time.Sleep(time.Second * time.Duration(retry+1))
 	}
 	if err != nil {
@@ -39,15 +43,18 @@ func PlaceOrder(db *gorm.DB, customerID, productID, quantity int) (order models.
 	newOrder := &models.Order{
 		CustomerID: uint(customer.ID),
 		OrderDate:  time.Now(),
-		Status:     "Placed",
+		Status:     orderStatusPlaced,
 		Created_at: time.Now(),
 	}
 
 	// Place the order and update inventory stock
 	err = gateways.InitiatePayment(*newOrder)
 	if err != nil {
-		newOrder.Status = "Failed"
-		log.Printf("Error in payment gateway: %v", err)
+		newOrder.Status = orderStatusFailed
+		log.Printf("Error initiating payment: %v", err)
+
+		_ = updateCatalog(productID, -quantity)
+		log.Printf("Rolling back our inventory, adding %v to ProductID %v", quantity, productID)
 		return *newOrder, err
 	}
 
@@ -58,7 +65,7 @@ func PlaceOrder(db *gorm.DB, customerID, productID, quantity int) (order models.
 		}
 
 		// Log the retry and sleep before the next attempt
-		log.Printf("Retrying CreateOrder, attempt %d", retry+1)
+		log.Printf("Retry attempt %d to create an order", retry+1)
 		time.Sleep(time.Second * time.Duration(retry+1))
 	}
 	if err != nil {
