@@ -5,17 +5,22 @@ import (
 )
 
 var (
+	PaymentGatewayAmex   = "Amex"
+	PaymentGatewayZakpay = "Zakpay"
+	PaymentGatewayWeiss  = "Weiss"
+	PaymentGatewayPaypal = "Paypal"
+
 	PaymentGateways = []string{
-		"Amex",
-		"Zakpay",
-		//"Weiss",
-		//"Paypal",
+		PaymentGatewayAmex,
+		PaymentGatewayZakpay,
+		//PaymentGatewayWeiss,
+		//PaymentGatewayPaypal,
 
 	}
 	PaymentGatewaysConfig = []randutil.Choice{
-		{Item: "Weiss", Weight: 1},
-		{Item: "Zakpay", Weight: 80},
-		{Item: "Paypal", Weight: 0},
-		{Item: "Amex", Weight: 2},
+		{Item: PaymentGatewayWeiss, Weight: 1},
+		{Item: PaymentGatewayZakpay, Weight: 80},
+		{Item: PaymentGatewayPaypal, Weight: 0},
+		{Item: PaymentGatewayAmex, Weight: 2},
 	}
 )
