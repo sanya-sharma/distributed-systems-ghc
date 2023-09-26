@@ -6,7 +6,6 @@ import (
 	"payment/entity"
 	"payment/models"
 	paymentMehtods "payment/service/payment-methods"
-	"strings"
 	"time"
 	"sync"
 )
@@ -33,7 +32,7 @@ func InitiatePayment(payment models.Payment) (err error) {
 			return errors.New("invalid payment gateway")
 		}
 
-		log.Printf("Initiating payment using %s gateway for OrderID %d \n", paymentGateway, payment.OrderID)
+		log.Printf("Initiating payment using %s gateway\n", paymentGateway)
 
 		paymentContext := &PaymentContext{}
 		paymentContext.SetPaymentMethod(paymentGatewayClient)
