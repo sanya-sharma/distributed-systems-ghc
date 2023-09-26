@@ -95,11 +95,11 @@ In this section, we'll be implementing the circuit breaker and add the relevant 
     }
 ```
 
-**2. Copy paste the following snippet for ExecuteTransaction, executing circuit breaker**
+**2. Copy paste the following snippet for ExecuteTransaction, which executes the circuit breaker**
 
 ```
     /* 
-       ExecuteTransaction executes the transaction using circuit breaker.
+       ExecuteTransaction executes the payment transaction using circuit breaker.
        Given a certain number of failures happening in a payment gateway, 
        it'll stop retrying to avoid undue stress on the system and break open the circuit.
        Circuit will be reset after a certain interval of time.
@@ -123,7 +123,7 @@ In this section, we'll be implementing the circuit breaker and add the relevant 
     return completed
 ```
 
-**4. If the circuit is open, we will not attempt to call the gateway and return from the function.**<br />
+**4. If the circuit is open, we will not attempt to call the gateway and return from the function before performing the operation.**<br />
 
 ```
     if cb.open {
