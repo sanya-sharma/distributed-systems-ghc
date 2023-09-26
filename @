@@ -1,0 +1,14 @@
+Modifying readme for circuit breaker code.
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# interactive rebase in progress; onto c0e2d525
+# Last command done (1 command done):
+#    pick ebc9110c Modifying readme for circuit breaker code.
+# No commands remaining.
+# You are currently rebasing branch 'readme_circuitBreaker' on 'c0e2d525'.
+#
+# Changes to be committed:
+#	modified:   README.md
+#
