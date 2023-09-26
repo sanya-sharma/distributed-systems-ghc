@@ -1,5 +1,9 @@
-# distributed-systems-ghc
-This is the master repo for GHC23 presentation
+# Building Resilient Distributed Systems With Golang
+This repo is designed solely for the purpose of GHC'23 Level Up Lab titled 'Building Resilient Distributed Systems With Golang'.
+Presenters:
+    1. [Aayushi Chadha](https://www.linkedin.com/in/aayushi-chadha/)
+    2. [Sanya Sharma](https://www.linkedin.com/in/sanyasharma2511/)
+    3. [Utsha Sinha](https://www.linkedin.com/in/utsha-sinha1510)
 
 
 ### Lab Prerequisites
@@ -77,18 +81,24 @@ Navigate to the [Payment Service](https://github.com/sanya-sharma/distributed-sy
 **1. Add the following circuit breaker to the payment [service.go](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go) file**
 
 ```
-    //CircuitBreaker structure 
+    //CircuitBreaker is the structure for circuit breaker
+    // It has two fields:
+    //   1. mu - Locks, Unlocks the the variable.
+    //   2. open - Stores whether the circuit is open or not
     type CircuitBreaker struct {
         mu   sync.Mutex
         open bool
     }
 
     // ExecuteTransaction executes the transaction using circuit breaker.
+    // Given a certain number of failures happening in a payment gateway, 
+    // it'll stop retrying to avoid undue stress on the system and break open the circuit.
+    // Circuit will be reset after a certain interval of time.
     func (cb *CircuitBreaker) ExecuteTransaction(operation func() bool, consecutiveFails int, paymentGateway string) bool {
         cb.mu.Lock()
         defer cb.mu.Unlock()
         if cb.open {
-            // Print log informing user of open circuit and that we are not retrying
+            // Best Practice: Print log informing user of open circuit state and that we are not retrying
             // return from this function
         }
 
@@ -98,9 +108,8 @@ Navigate to the [Payment Service](https://github.com/sanya-sharma/distributed-sy
             // We encountered a failure. 
             // If the number of consecutive failures is greater than the desired failure count
             // open the circuit.
-            // as a best practice, print the log statement informing opening of the circuit.
-            // Add the below function to add delayed reset to close the circuit after certain time to retry after we give our 
-            // downstream a break.
+            // Best Practice, print the log statement informing opening of the circuit.
+            // Using goroutine, reset the circuit using with ResetAfterDelay function to close the circuit after certain time.
         }
 
         return completed
@@ -110,23 +119,25 @@ Navigate to the [Payment Service](https://github.com/sanya-sharma/distributed-sy
     func (cb *CircuitBreaker) ResetAfterDelay(paymentGateway string) {
         // Make the system take a sleep for sometime. 
         // close the circuit.
-        // Best Practice: Add the log to inform user that the circuit is now reset for the selected payment gateway)
+        // Best Practice: Add the log to inform user that the circuit is now reset for the selected payment gateway
+    }
+    
+```
+
+**2. Modify the InitiatePayment function to call above circuit breaker code to execute payment**
+```
+for retry := 0; retry <= maxRetries; retry++ {
+    if retry != 0 {
+        // Log the retry and sleep before the next attempt
+        log.Printf("Payment gateway %v is unavailable. Retrying payment, attempt %d", paymentGateway, retry)
+        time.Sleep(time.Second * time.Duration(retry))
     }
 
-    // Modify the InitiatePayment function to call above circuit breaker code to execute payment
-    for retry := 0; retry <= maxRetries; retry++ {
-
-        if retry != 0 {
-            // Log the retry and sleep before the next attempt
-            log.Printf("Payment gateway %v is unavailable. Retrying payment, attempt %d", paymentGateway, retry)
-            time.Sleep(time.Second * time.Duration(retry))
-        }
-
-        completed = circuit.ExecuteTransaction(func() bool {
-            return paymentContext.ExecutePayment()
-        }, retry, paymentGateway)
-        if completed {
-            break
-        }
+    completed = circuit.ExecuteTransaction(func() bool {
+        return paymentContext.ExecutePayment()
+    }, retry, paymentGateway)
+    if completed {
+        break
     }
+}
 ```
