@@ -4,19 +4,22 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"order/config"
 	"order/models"
 )
 
+var (
+	paymentStatusPending = "Pending"
+)
+
 func InitiatePayment(order models.Order) error {
 	payment := models.Payment{
-		OrderID:       order.OrderID,
-		PaymentMethod: "Paypal",                      // TODO: Specify the payment method
-		Amount:        calculatePaymentAmount(order), // TODO: Calculate the payment amount
-		Status:        "Pending",
+		OrderID: order.OrderID,
+		Amount:  100.0,
+		Status:  paymentStatusPending,
 	}
 
 	requestBody, err := json.Marshal(payment)
@@ -42,7 +45,7 @@ func InitiatePayment(order models.Order) error {
 	if resp.StatusCode != http.StatusOK {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Println("Error reading response body:", err)
+			log.Println("Error reading response body:", err)
 			return err
 		}
 		return errors.New(string(body))
@@ -53,10 +56,9 @@ func InitiatePayment(order models.Order) error {
 
 func RollbackPayment(order models.Order) error {
 	payment := models.Payment{
-		OrderID:       order.OrderID,
-		PaymentMethod: "Paypal",                      // TODO: Specify the payment method
-		Amount:        calculatePaymentAmount(order), // TODO: Calculate the payment amount
-		Status:        "Pending",
+		OrderID: order.OrderID,
+		Amount:  100.00,
+		Status:  paymentStatusPending,
 	}
 
 	requestBody, err := json.Marshal(payment)
@@ -80,8 +82,4 @@ func RollbackPayment(order models.Order) error {
 	}
 
 	return nil
-}
-
-func calculatePaymentAmount(order models.Order) float64 {
-	return 10.0
 }

@@ -84,6 +84,7 @@ func UpdateCatalog(db *gorm.DB, productID int, quantity int) (err error) {
 
 	inventory.StockQty -= quantity
 
+	log.Println("Updating the catalog, the new inventory size is: ", inventory.StockQty)
 	err = catalogRepo.UpdateCatalog(inventory)
 	if err != nil {
 		return errors.New("failed to update catalog")
