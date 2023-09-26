@@ -129,7 +129,7 @@ In this section, we'll be implementing the circuit breaker and add the relevant 
     &nbsp;TODOs:<br />
       &ensp;- Make the system take a sleep for sometime.<br />
       &ensp;- Close the circuit so the gateway is ready for another set of requests<br />
-      &ensp;- Using goroutine, call the ResetAfterDelay function from ExecuteTransaction while opening the circuit so that it resets automatically after some time.<br />\
+      &ensp;- Using goroutine, call the ResetAfterDelay function from ExecuteTransaction while opening the circuit so that it resets automatically after some time.<br />
 ```
     // ResetAfterDelay resets the circuit after a delay.
     func (cb *CircuitBreaker) ResetAfterDelay(paymentGateway string) {
