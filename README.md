@@ -78,7 +78,7 @@ Navigate to the [Payment Service](https://github.com/sanya-sharma/distributed-sy
 
 ### Lab Activity 2:
 
-In this section, we'll be implementing the circuit breaker and add the relevant code to the payment [service.go](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go) file
+In this section, we'll be implementing the circuit breaker and add the relevant code to the payment/[service.go](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go) file
 
 **1. Add the structure that implements the circuit breaker**
 
@@ -95,11 +95,7 @@ In this section, we'll be implementing the circuit breaker and add the relevant 
     }
 ```
 
-**2. Add the implementation of ExecuteTransaction for executing circuit breaker**<br />
-    &nbsp;TODOs:<br />
-      &ensp;- If the circuit is open, we will not attempt to call the gateway.<br />
-      &ensp;- When encountered failure, if the number of consecutive failures is greater than the desired failure count open the circuit.<br />
-      &ensp;- Best Practice: Print log informing user of state of circuit wherever required.<br />
+**2. Copy paste the following snippet for ExecuteTransaction, executing circuit breaker**
 
 ```
     /* 
@@ -111,34 +107,40 @@ In this section, we'll be implementing the circuit breaker and add the relevant 
     func (cb *CircuitBreaker) ExecuteTransaction(operation func() bool, consecutiveFails int, paymentGateway string) bool {
         cb.mu.Lock()
         defer cb.mu.Unlock()
-        if cb.open {
-            // TODO
-        }
-
-        completed := operation()
-
-        if !completed {
-            // TODO
-        }
-
-        return completed
+        
     }
 ```
 
-**3. Add the  ResetAfterDelay function that closes the circuit after certain time**<br />
-    &nbsp;TODOs:<br />
-      &ensp;- Make the system take a sleep for sometime.<br />
-      &ensp;- Close the circuit so the gateway is ready for another set of requests<br />
-      &ensp;- Using goroutine, call the ResetAfterDelay function from ExecuteTransaction while opening the circuit so that it resets automatically after some time.<br />
+**3. Add the code to open the circuit if the number of consecutive failures is greater than the desired failure count**<br />
+
+```
+    completed := operation()
+
+    if !completed {
+        /* Add code here */
+    }
+
+    return completed
+```
+
+**4. If the circuit is open, we will not attempt to call the gateway and return from the function.**<br />
+
+```
+    if cb.open {
+        /* Add code here */
+    }
+```
+
+**5. Using goroutine, call the ResetAfterDelay function from ExecuteTransaction while opening the circuit so that it resets automatically after some time.**<br />
 ```
     // ResetAfterDelay resets the circuit after a delay.
     func (cb *CircuitBreaker) ResetAfterDelay(paymentGateway string) {
-        // TODO
+        /* Add code here */
     }
     
 ```
 
-**4. Modify the InitiatePayment function to call above circuit breaker code to execute payment**
+**6. Modify the InitiatePayment function to call above circuit breaker code to execute payment**
 ```
 for retry := 0; retry <= maxRetries; retry++ {
     if retry != 0 {
