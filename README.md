@@ -41,7 +41,7 @@ If Docker is installed, it will display the Docker version. If it's not installe
 Run the following command in the terminal:
 
 ````
-postman --version`
+postman --version
 ````
 
 If Postman is installed, it will display the Postman version. If it's not installed, follow these instructions to install it:
@@ -96,10 +96,10 @@ In this section, we'll be implementing the circuit breaker and add the relevant 
 ```
 
 **2. Add the implementation of ExecuteTransaction for executing circuit breaker**<br />
-    TODOs:<br />
-      - If the circuit is open, we will not attempt to call the gateway.<br />
-      - When encountered failure, if the number of consecutive failures is greater than the desired failure count open the circuit.<br />
-      - Best Practice: Print log informing user of state of circuit wherever required.<br />
+    &nbsp;TODOs:<br />
+      &ensp;- If the circuit is open, we will not attempt to call the gateway.<br />
+      &ensp;- When encountered failure, if the number of consecutive failures is greater than the desired failure count open the circuit.<br />
+      &ensp;- Best Practice: Print log informing user of state of circuit wherever required.<br />
 
 ```
     /* 
@@ -126,10 +126,10 @@ In this section, we'll be implementing the circuit breaker and add the relevant 
 ```
 
 **3. Add the  ResetAfterDelay function that closes the circuit after certain time**<br />
-    TODOs:<br />
-      - Make the system take a sleep for sometime.<br />
-      - Close the circuit so the gateway is ready for another set of requests<br />
-      - Using goroutine, call the ResetAfterDelay function from ExecuteTransaction while opening the circuit so that it resets automatically after some time.<br />
+    &nbsp;TODOs:<br />
+      &ensp;- Make the system take a sleep for sometime.<br />
+      &ensp;- Close the circuit so the gateway is ready for another set of requests<br />
+      &ensp;- Using goroutine, call the ResetAfterDelay function from ExecuteTransaction while opening the circuit so that it resets automatically after some time.<br />\
 ```
     // ResetAfterDelay resets the circuit after a delay.
     func (cb *CircuitBreaker) ResetAfterDelay(paymentGateway string) {
