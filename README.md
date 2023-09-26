@@ -1,11 +1,10 @@
 # Building Resilient Distributed Systems With Golang
 This repo is designed solely for the purpose of GHC'23 Level Up Lab titled 'Building Resilient Distributed Systems With Golang'.
 
-Presenters:</br>
+Presenters:<br />
     1. [Aayushi Chadha](https://www.linkedin.com/in/aayushi-chadha/)<br />
     2. [Sanya Sharma](https://www.linkedin.com/in/sanyasharma2511/)<br />
     3. [Utsha Sinha](https://www.linkedin.com/in/utsha-sinha1510)<br />
-
 
 ### Lab Prerequisites
 
@@ -79,53 +78,67 @@ Navigate to the [Payment Service](https://github.com/sanya-sharma/distributed-sy
 
 ### Lab Activity 2:
 
-**1. Add the following circuit breaker to the payment [service.go](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go) file**
+In this section, we'll be adding circuit breaker code to the payment [service.go](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go) file
+
+**1. Add the structure that implements the circuit breaker**
 
 ```
-    //CircuitBreaker is the structure for circuit breaker
-    // It has two fields:
-    //   1. mu - Locks, Unlocks the the variable.
-    //   2. open - Stores whether the circuit is open or not
+    /* 
+       CircuitBreaker implements the circuit breaker
+       It has two fields:
+        1. mu - Locks, Unlocks the instance of variable.
+        2. open - Stores the state of circuit (open/close)
+    */
     type CircuitBreaker struct {
         mu   sync.Mutex
         open bool
     }
+```
 
-    // ExecuteTransaction executes the transaction using circuit breaker.
-    // Given a certain number of failures happening in a payment gateway, 
-    // it'll stop retrying to avoid undue stress on the system and break open the circuit.
-    // Circuit will be reset after a certain interval of time.
+**2. Add the implementation of ExecuteTransaction for executing circuit breaker**
+    TODOs:
+      - If the circuit is open, we will not attempt to call the gateway.
+      - When encountered failure, if the number of consecutive failures is greater than the desired failure count open the circuit.
+      - Best Practice: Print log informing user of state of circuit wherever required.
+
+```
+    /* 
+       ExecuteTransaction executes the transaction using circuit breaker.
+       Given a certain number of failures happening in a payment gateway, 
+       it'll stop retrying to avoid undue stress on the system and break open the circuit.
+       Circuit will be reset after a certain interval of time.
+    */
     func (cb *CircuitBreaker) ExecuteTransaction(operation func() bool, consecutiveFails int, paymentGateway string) bool {
         cb.mu.Lock()
         defer cb.mu.Unlock()
         if cb.open {
-            // Best Practice: Print log informing user of open circuit state and that we are not retrying
-            // return from this function
+            // TODO
         }
 
         completed := operation()
 
         if !completed {
-            // We encountered a failure. 
-            // If the number of consecutive failures is greater than the desired failure count
-            // open the circuit.
-            // Best Practice, print the log statement informing opening of the circuit.
-            // Using goroutine, reset the circuit using with ResetAfterDelay function to close the circuit after certain time.
+            // TODO
         }
 
         return completed
     }
+```
 
+**3. Add the  ResetAfterDelay function that closes the circuit after certain time**
+    TODOs:
+      - Make the system take a sleep for sometime.
+      - Close the circuit so the gateway is ready for another set of requests
+      - Using goroutine, call the ResetAfterDelay function from ExecuteTransaction while opening the circuit so that it resets automatically after some time.
+```
     // ResetAfterDelay resets the circuit after a delay.
     func (cb *CircuitBreaker) ResetAfterDelay(paymentGateway string) {
-        // Make the system take a sleep for sometime. 
-        // close the circuit.
-        // Best Practice: Add the log to inform user that the circuit is now reset for the selected payment gateway
+        // TODO
     }
     
 ```
 
-**2. Modify the InitiatePayment function to call above circuit breaker code to execute payment**
+**4. Modify the InitiatePayment function to call above circuit breaker code to execute payment**
 ```
 for retry := 0; retry <= maxRetries; retry++ {
     if retry != 0 {
