@@ -8,7 +8,6 @@ import (
 	paymentMehtods "payment/service/payment-methods"
 	"time"
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -62,6 +61,9 @@ func InitiatePayment(payment models.Payment) (err error) {
 			if completed {
 				break
 			}
+			// Log the retry and sleep before the next attempt
+			log.Printf("Payment gateway %v is unavailable\n Retrying payment, attempt %d", paymentGateway, retry+1)
+			time.Sleep(time.Second * time.Duration(retry+1))
 		}
 		if !completed {
 			log.Printf("Could not attempt payment via %v gateway\n", paymentGateway)
