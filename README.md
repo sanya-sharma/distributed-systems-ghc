@@ -78,7 +78,7 @@ Navigate to the [Payment Service](https://github.com/sanya-sharma/distributed-sy
 
 ### Lab Activity 2:
 
-In this section, we'll be adding circuit breaker code to the payment [service.go](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go) file
+In this section, we'll be implementing the circuit breaker and add the relevant code to the payment [service.go](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go) file
 
 **1. Add the structure that implements the circuit breaker**
 
@@ -95,11 +95,11 @@ In this section, we'll be adding circuit breaker code to the payment [service.go
     }
 ```
 
-**2. Add the implementation of ExecuteTransaction for executing circuit breaker**
-    TODOs:
-      - If the circuit is open, we will not attempt to call the gateway.
-      - When encountered failure, if the number of consecutive failures is greater than the desired failure count open the circuit.
-      - Best Practice: Print log informing user of state of circuit wherever required.
+**2. Add the implementation of ExecuteTransaction for executing circuit breaker**<br />
+    TODOs:<br />
+      - If the circuit is open, we will not attempt to call the gateway.<br />
+      - When encountered failure, if the number of consecutive failures is greater than the desired failure count open the circuit.<br />
+      - Best Practice: Print log informing user of state of circuit wherever required.<br />
 
 ```
     /* 
@@ -125,11 +125,11 @@ In this section, we'll be adding circuit breaker code to the payment [service.go
     }
 ```
 
-**3. Add the  ResetAfterDelay function that closes the circuit after certain time**
-    TODOs:
-      - Make the system take a sleep for sometime.
-      - Close the circuit so the gateway is ready for another set of requests
-      - Using goroutine, call the ResetAfterDelay function from ExecuteTransaction while opening the circuit so that it resets automatically after some time.
+**3. Add the  ResetAfterDelay function that closes the circuit after certain time**<br />
+    TODOs:<br />
+      - Make the system take a sleep for sometime.<br />
+      - Close the circuit so the gateway is ready for another set of requests<br />
+      - Using goroutine, call the ResetAfterDelay function from ExecuteTransaction while opening the circuit so that it resets automatically after some time.<br />
 ```
     // ResetAfterDelay resets the circuit after a delay.
     func (cb *CircuitBreaker) ResetAfterDelay(paymentGateway string) {
