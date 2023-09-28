@@ -1,6 +1,10 @@
-# distributed-systems-ghc
-This is the master repo for GHC23 presentation
+# Building Resilient Distributed Systems With Golang
+This repo is designed solely for the purpose of GHC'23 Level Up Lab titled 'Building Resilient Distributed Systems With Golang'.
 
+Presenters:<br />
+    1. [Aayushi Chadha](https://www.linkedin.com/in/aayushi-chadha/)<br />
+    2. [Sanya Sharma](https://www.linkedin.com/in/sanyasharma2511/)<br />
+    3. [Utsha Sinha](https://www.linkedin.com/in/utsha-sinha1510)<br />
 
 ### Lab Prerequisites
 
@@ -37,7 +41,7 @@ If Docker is installed, it will display the Docker version. If it's not installe
 Run the following command in the terminal:
 
 ````
-postman --version`
+postman --version
 ````
 
 If Postman is installed, it will display the Postman version. If it's not installed, follow these instructions to install it:
@@ -74,35 +78,82 @@ Navigate to the [Payment Service](https://github.com/sanya-sharma/distributed-sy
 
 ### Lab Activity 2:
 
-**1. Add the following circuit breaker to the payment [service.go](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go) file**
+In this section, we'll be implementing the circuit breaker and add the relevant code to the payment/[service.go](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go) file
 
+**1. Add the structure that implements the circuit breaker**
 
+```
+    /* 
+       CircuitBreaker implements the circuit breaker
+       It has two fields:
+        1. mu - Locks, Unlocks the instance of variable.
+        2. open - Stores the state of circuit (open/close)
+    */
+    type CircuitBreaker struct {
+        mu   sync.Mutex
+        open bool
+    }
+```
+
+**2. Copy paste the following snippet for ExecuteTransaction, which executes the circuit breaker**
+
+```
+    /* 
+       ExecuteTransaction executes the payment transaction using circuit breaker.
+       Given a certain number of failures happening in a payment gateway, 
+       it'll stop retrying to avoid undue stress on the system and break open the circuit.
+       Circuit will be reset after a certain interval of time.
+    */
     func (cb *CircuitBreaker) ExecuteTransaction(operation func() bool, consecutiveFails int, paymentGateway string) bool {
-    cb.mu.Lock()
-    defer cb.mu.Unlock()
-	if cb.open {
-        log.Printf("%v is down, not retrying", paymentGateway)
-		return false
+        cb.mu.Lock()
+        defer cb.mu.Unlock()
+        
+    }
+```
+
+**3. Add the code to open the circuit if the number of consecutive failures is greater than the desired failure count**<br />
+
+```
+    completed := operation()
+
+    if !completed {
+        /* Add code here */
     }
 
-	completed := operation()
+    return completed
+```
 
-	if !completed {
-        if consecutiveFails >= 3 {
-            cb.open = true
-            log.Printf("Circuit is open for %v", paymentGateway)
-            go cb.ResetAfterDelay(paymentGateway)
-        }
+**4. If the circuit is open, we will not attempt to call the gateway and return from the function before performing the operation.**<br />
+
+```
+    if cb.open {
+        /* Add code here */
     }
+```
 
-	return completed
-    }
-
+**5. Using goroutine, call the ResetAfterDelay function from ExecuteTransaction while opening the circuit so that it resets automatically after some time.**<br />
+```
+    // ResetAfterDelay resets the circuit after a delay.
     func (cb *CircuitBreaker) ResetAfterDelay(paymentGateway string) {
-    // Schedule a reset of the circuit after a delay
-    time.Sleep(10 * time.Second)
-    cb.mu.Lock()
-    cb.open = false
-    cb.mu.Unlock()
-    log.Printf("Circuit is reset for %v", paymentGateway)
+        /* Add code here */
+    }
+    
+```
+
+**6. Modify the InitiatePayment function to call above circuit breaker code to execute payment**
+```
+for retry := 0; retry <= maxRetries; retry++ {
+    if retry != 0 {
+        // Log the retry and sleep before the next attempt
+        log.Printf("Payment gateway %v is unavailable. Retrying payment, attempt %d", paymentGateway, retry)
+        time.Sleep(time.Second * time.Duration(retry))
+    }
+
+    completed = circuit.ExecuteTransaction(func() bool {
+        return paymentContext.ExecutePayment()
+    }, retry, paymentGateway)
+    if completed {
+        break
+    }
 }
+```
