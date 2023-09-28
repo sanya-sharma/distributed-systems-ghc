@@ -74,13 +74,13 @@ View the API response to see all the saree varieties available along with their 
 
 **6. Test the Place Order API request**
 
-Navigate to the [Payment Service](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go#L16). As you can see the service retries each of the available payment gateway available
+Navigate to the [Payment Service](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go#L16). As you can see, the service retries each of the available payment gateway.
 
 ### Lab Activity 2:
 
-In this section, we'll be implementing the circuit breaker and add the relevant code to the payment/[service.go](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go) file
+In this section, we'll be implementing the circuit breaker and add the relevant code to the payment/service/[service.go](https://github.com/sanya-sharma/distributed-systems-ghc/blob/main/payment/service/service.go) file
 
-**1. Add the structure that implements the circuit breaker**
+**1. Add the structure and map that implements the circuit breaker**
 
 ```
     /* 
@@ -93,6 +93,8 @@ In this section, we'll be implementing the circuit breaker and add the relevant 
         mu   sync.Mutex
         open bool
     }
+
+    var circuitBreakerMap = map[string]*CircuitBreaker{}
 ```
 
 **2. Copy paste the following snippet for ExecuteTransaction, which executes the circuit breaker**
@@ -142,9 +144,21 @@ In this section, we'll be implementing the circuit breaker and add the relevant 
 
 **6. Modify the InitiatePayment function to call above circuit breaker code to execute payment**
 ```
+circuit, ok := circuitBreakerMap[paymentGateway]
+if !ok {
+    // Create a new CircuitBreaker for the payment gateway
+    circuit = &CircuitBreaker{}
+    circuitBreakerMap[paymentGateway] = circuit
+}
+
+var completed bool
+
 for retry := 0; retry <= maxRetries; retry++ {
     if retry != 0 {
-        // Log the retry and sleep before the next attempt
+        /* 
+            Loggin the retry 
+            Add sleep before the next attempt
+        */
         log.Printf("Payment gateway %v is unavailable. Retrying payment, attempt %d", paymentGateway, retry)
         time.Sleep(time.Second * time.Duration(retry))
     }
@@ -157,3 +171,21 @@ for retry := 0; retry <= maxRetries; retry++ {
     }
 }
 ```
+
+**7. Uncomment the remaining two payment gatways in payment/entity/entity.go**
+```
+PaymentGateways = []string{
+    PaymentGatewayAmex,
+    PaymentGatewayZakpay,
+    PaymentGatewayWeiss,
+    PaymentGatewayPaypal,
+}
+```
+
+**8. Run the docker compose command on the terminal**
+```
+docker-compose up --build
+```
+
+**9. Test the Place Order API request**
+Try placing an order now using the PlaceOrder API via postman.
