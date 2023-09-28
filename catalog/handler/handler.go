@@ -77,7 +77,7 @@ func UpdateCatalog(c *gin.Context) {
 		return
 	}
 
-	log.Printf("Recieved request for update catalog: %v", updateCatalogRequest)
+	log.Printf("Recieved request for updating the catalog")
 
 	db, _ := c.Get("db")
 	err = service.UpdateCatalog(db.(*gorm.DB), updateCatalogRequest.ProductID, updateCatalogRequest.StockQty)
