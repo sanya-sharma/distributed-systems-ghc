@@ -17,7 +17,7 @@ func UpdateCatalog(catalog *models.Catalog) (err error) {
 	if err != nil {
 		return err
 	}
-	log.Printf("gateway : ", catalog.ProductID, " ", catalog.StockQty)
+
 	catalogServiceURL, err := config.ReadServiceConfig("catalog")
 	if err != nil {
 		return err

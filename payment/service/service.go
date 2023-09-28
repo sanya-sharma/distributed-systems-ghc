@@ -2,12 +2,10 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"payment/entity"
 	"payment/models"
 	paymentMehtods "payment/service/payment-methods"
-	"strings"
 	"time"
 )
 
@@ -21,7 +19,7 @@ func InitiatePayment(payment models.Payment) (err error) {
 			return errors.New("invalid payment gateway")
 		}
 
-		log.Printf("Initiating payment using %s gateway for OrderID %d \n", paymentGateway, payment.OrderID)
+		log.Printf("Initiating payment using %s gateway\n", paymentGateway)
 
 		paymentContext := &PaymentContext{}
 		paymentContext.SetPaymentMethod(paymentGatewayClient)
@@ -51,20 +49,20 @@ func InitiatePayment(payment models.Payment) (err error) {
 }
 
 func RollbackPayment(payment models.Payment) (err error) {
-	fmt.Printf("Rolling back payment with ID %d...\n", payment.ID)
+	log.Printf("Rolling back payment with ID %d", payment.ID)
 
 	return nil
 }
 
 func getPaymentMethod(paymentGateway string) PaymentGateways {
-	switch strings.ToLower(paymentGateway) {
-	case "amex":
+	switch paymentGateway {
+	case entity.PaymentGatewayAmex:
 		return &paymentMehtods.Amex{}
-	case "paypal":
+	case entity.PaymentGatewayPaypal:
 		return &paymentMehtods.Paypal{}
-	case "weiss":
+	case entity.PaymentGatewayWeiss:
 		return &paymentMehtods.Weiss{}
-	case "zakpay":
+	case entity.PaymentGatewayZakpay:
 		return &paymentMehtods.Zakpay{}
 	default:
 		return nil
