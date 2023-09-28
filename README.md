@@ -182,10 +182,10 @@ PaymentGateways = []string{
 }
 ```
 
-**8. Run the docker compose command on the terminal**
+**8. Run the docker compose command on the terminal**<br />
 ```
 docker-compose up --build
 ```
 
-**9. Test the Place Order API request**
+**9. Test the Place Order API request**<br />
 Try placing an order now using the PlaceOrder API via postman.
