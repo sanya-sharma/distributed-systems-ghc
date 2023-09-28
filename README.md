@@ -142,7 +142,7 @@ In this section, we'll be implementing the circuit breaker and add the relevant 
     
 ```
 
-**6. Modify the InitiatePayment function to call above circuit breaker code to execute payment**
+**6. Modify the InitiatePayment function to call above circuit breaker code to execute payment**<br />
 ```
 circuit, ok := circuitBreakerMap[paymentGateway]
 if !ok {
@@ -172,7 +172,7 @@ for retry := 0; retry <= maxRetries; retry++ {
 }
 ```
 
-**7. Uncomment the remaining two payment gatways in payment/entity/entity.go**
+**7. Uncomment the remaining two payment gatways in payment/entity/entity.go**<br />
 ```
 PaymentGateways = []string{
     PaymentGatewayAmex,
