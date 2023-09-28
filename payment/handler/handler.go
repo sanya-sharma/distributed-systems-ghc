@@ -23,7 +23,7 @@ func InitiatePayment(c *gin.Context) {
 		return
 	}
 
-	log.Printf("Recieved request to initiate payment: %v", payment)
+	log.Printf("Recieved a request to initiate payment")
 
 	if err := service.InitiatePayment(payment); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"Error initiating the payment": err.Error()})
