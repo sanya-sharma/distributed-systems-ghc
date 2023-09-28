@@ -13,6 +13,12 @@ import (
 
 var maxRetries = 3
 
+/* 
+	CircuitBreaker implements the circuit breaker
+	It has two fields:
+	1. mu - Locks, Unlocks the instance of variable.
+	2. open - Stores the state of circuit (open/close)
+*/
 type CircuitBreaker struct {
     mu             sync.Mutex
     open           bool
@@ -55,9 +61,6 @@ func InitiatePayment(payment models.Payment) (err error) {
 			if completed {
 				break
 			}
-			// Log the retry and sleep before the next attempt
-			log.Printf("Payment gateway %v is unavailable\n Retrying payment, attempt %d", paymentGateway, retry+1)
-			time.Sleep(time.Second * time.Duration(retry+1))
 		}
 		if !completed {
 			log.Printf("Could not attempt payment via %v gateway\n", paymentGateway)
@@ -92,6 +95,12 @@ func getPaymentMethod(paymentGateway string) PaymentGateways {
 	}
 }
 
+/* 
+	ExecuteTransaction executes the payment transaction using circuit breaker.
+	Given a certain number of failures happening in a payment gateway, 
+	it'll stop retrying to avoid undue stress on the system and break open the circuit.
+	Circuit will be reset after a certain interval of time.
+*/
 func (cb *CircuitBreaker) ExecuteTransaction(operation func() bool, consecutiveFails int, paymentGateway string) bool {
     cb.mu.Lock()
     defer cb.mu.Unlock()
@@ -114,8 +123,8 @@ func (cb *CircuitBreaker) ExecuteTransaction(operation func() bool, consecutiveF
 	return completed
 }
 
+// ResetAfterDelay schedules the reset of circuit after a delay.
 func (cb *CircuitBreaker) ResetAfterDelay(paymentGateway string) {
-    // Schedule a reset of the circuit after a delay
     time.Sleep(10 * time.Second)
     cb.mu.Lock()
     cb.open = false
