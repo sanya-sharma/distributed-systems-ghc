@@ -96,6 +96,7 @@ In this section, we'll be implementing the circuit breaker and add the relevant 
 
     var circuitBreakerMap = map[string]*CircuitBreaker{}
 ```
+&nbsp; Note: Remember to add sync in import libraries.
 
 **2. Copy paste the following snippet for ExecuteTransaction, which executes the circuit breaker**
 
@@ -172,7 +173,8 @@ for retry := 0; retry <= maxRetries; retry++ {
 }
 ```
 
-**7. Uncomment the remaining two payment gatways in payment/entity/entity.go**<br />
+**7. Add more application level resilience**<br />
+&nbsp;We can add more fallback options for payment gateways for the situations when other options are unavailable. To do that, let's uncomment the remaining two payment gateways.
 ```
 PaymentGateways = []string{
     PaymentGatewayAmex,
@@ -182,10 +184,4 @@ PaymentGateways = []string{
 }
 ```
 
-**8. Run the docker compose command on the terminal**<br />
-```
-docker-compose up --build
-```
-
-**9. Test the Place Order API request**<br />
-Try placing an order now using the PlaceOrder API via postman.
+**8. Re-run the service and try placing order now**<br />
