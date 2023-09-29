@@ -174,7 +174,7 @@ for retry := 0; retry <= maxRetries; retry++ {
 ```
 
 **7. Add more application level resilience**<br />
-&nbsp;We can add more fallback options for payment gateways for the situations when other options are unavailable. To do that, let's uncomment the remaining two payment gateways.
+&nbsp;We can add more fallback options for payment gateways for the situations when other options are unavailable. To do that, let's uncomment the remaining two payment gateways in payment/entity/entity.go.
 ```
 PaymentGateways = []string{
     PaymentGatewayAmex,
