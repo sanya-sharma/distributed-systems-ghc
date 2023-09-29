@@ -50,6 +50,7 @@ If Postman is installed, it will display the Postman version. If it's not instal
 * Download the Postman app for your operating system.
 * Install Postman following the installation instructions provided for your OS.
 * Use this link to access sample requests for the lab: [Postman GHC Collection](https://winter-star-7764.postman.co/workspace/GHC~d573817e-ed58-47c3-9649-154b689c53a5/collection/29024639-a2ec43b9-7243-4c17-9e70-c146c0b26dab?action=share&creator=29024639)
+https://app.getpostman.com/join-team?invite_code=8c7d32446168d0168969066768ea0c02
 
 
 ### Lab Activity 1:
