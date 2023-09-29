@@ -186,3 +186,27 @@ PaymentGateways = []string{
 ```
 
 **8. Re-run the service and try placing order now**<br />
+
+
+** Sample requests
+GetCatalog API
+GET call
+URL:
+```
+localhost:8083/get-catalog
+```
+
+PlaceOrder API
+POST call
+URL: 
+```
+localhost:8080/place-order
+```
+Body
+```
+{
+    "customer_id": 3,
+    "product_id": 3,
+    "quantity": 4
+}
+```
