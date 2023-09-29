@@ -188,7 +188,7 @@ PaymentGateways = []string{
 **8. Re-run the service and try placing order now**<br />
 
 
-**Sample requests**<br />
+** 9. Sample requests**<br />
 GetCatalog API<br />
 GET call<br />
 URL:<br />
@@ -204,8 +204,8 @@ URL: <br />
 ```
 localhost:8080/place-order
 ```
-
-Body
+<br />
+Body<br />
 ```
 {
     "customer_id": 3,
