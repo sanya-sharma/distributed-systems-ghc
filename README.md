@@ -206,10 +206,10 @@ localhost:8080/place-order
 ```
 <br />
 Body<br />
-```
+
 {
     "customer_id": 3,
     "product_id": 3,
     "quantity": 4
 }
-```
+
